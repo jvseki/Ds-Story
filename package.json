@@ -1,0 +1,12 @@
+{
+  "name": "ds-a-fonte",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Site template DS A Fonte — catálogo e orçamento via WhatsApp",
+  "scripts": {
+    "dev": "npx --yes serve . -p 3000",
+    "preview": "npx --yes serve . -p 3000"
+  },
+  "keywords": ["ds-a-fonte", "catalogo", "static-site"],
+  "license": "UNLICENSED"
+}

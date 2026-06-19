@@ -1,0 +1,21 @@
+# Dependências e build
+node_modules/
+dist/
+.vercel/
+
+# Sistema operacional
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editores
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Logs e ambiente
+*.log
+.env
+.env.*
+!.env.example
