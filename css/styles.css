@@ -503,6 +503,58 @@ button {
   line-height: 1.5;
 }
 
+.product-card__sizes {
+  margin-bottom: 16px;
+}
+
+.size-label {
+  display: block;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--color-text-muted);
+  margin-bottom: 8px;
+}
+
+.size-options {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+}
+
+.size-btn {
+  padding: 10px 0;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--color-text-muted);
+  background: var(--color-bg-elevated);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  transition: var(--transition);
+  touch-action: manipulation;
+}
+
+.size-btn:hover {
+  color: var(--color-text);
+  border-color: var(--color-green);
+}
+
+.size-btn.active {
+  background: var(--color-green);
+  color: #fff;
+  border-color: var(--color-green);
+}
+
+.btn--whatsapp:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btn--whatsapp:disabled:hover {
+  background: #25D366;
+}
+
 /* ---- About ---- */
 .about {
   padding: 80px 0;
