@@ -74,7 +74,7 @@ function renderSizeOptions(produtoId, selected = '') {
 
 function buildProductCardHTML(produto) {
   return `
-    <article class="product-card" data-id="${produto.id}" data-category="${produto.categoria}">
+    <article class="product-card product-card--animate" data-id="${produto.id}" data-category="${produto.categoria}">
       <div class="product-card__image">
         <img src="${produto.imagem}" alt="${produto.nome}" loading="lazy">
         <span class="product-card__tag">${produto.categoriaLabel}</span>
@@ -205,24 +205,40 @@ function initHeaderScroll() {
 }
 
 function initCardAnimations() {
-  const cards = document.querySelectorAll('.product-card:not(.visible)');
+  const cards = document.querySelectorAll('.product-card--animate:not(.visible)');
   if (!cards.length) return;
+
+  const reveal = (card, delay = 0) => {
+    setTimeout(() => {
+      card.classList.add('visible');
+      card.classList.remove('product-card--animate');
+    }, delay);
+  };
+
+  if (!('IntersectionObserver' in window)) {
+    cards.forEach((card, i) => reveal(card, i * 80));
+    return;
+  }
 
   const observer = new IntersectionObserver(
     (entries) => {
       entries.forEach((entry, i) => {
         if (entry.isIntersecting) {
-          setTimeout(() => {
-            entry.target.classList.add('visible');
-          }, i * 80);
+          reveal(entry.target, i * 80);
           observer.unobserve(entry.target);
         }
       });
     },
-    { threshold: 0.1, rootMargin: '0px 0px -40px 0px' }
+    { threshold: 0.05, rootMargin: '0px 0px -20px 0px' }
   );
 
   cards.forEach(card => observer.observe(card));
+
+  setTimeout(() => {
+    document.querySelectorAll('.product-card--animate:not(.visible)').forEach((card, i) => {
+      reveal(card, i * 40);
+    });
+  }, 1200);
 }
 
 document.addEventListener('DOMContentLoaded', () => {

@@ -422,8 +422,7 @@ button {
 }
 
 .section-header--left .section-desc {
-  margin-left: 0;
-  margin-right: 0;
+  margin: 0;
 }
 
 /* ---- Home catalog (Seleção) ---- */
@@ -484,23 +483,38 @@ button {
 .home-trust {
   list-style: none;
   margin-bottom: 24px;
+  padding: 0;
 }
 
 .home-trust li {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 12px;
   padding: 10px 0;
   font-size: 0.9rem;
   font-weight: 500;
   color: rgba(245, 245, 245, 0.88);
+  list-style: none;
 }
 
-.home-trust svg {
+.home-trust__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   width: 20px;
   height: 20px;
-  flex-shrink: 0;
+  min-width: 20px;
+  flex: 0 0 20px;
+  margin-top: 2px;
   color: var(--color-green);
+}
+
+.home-trust__icon svg {
+  display: block;
+  width: 20px;
+  height: 20px;
+  max-width: 20px;
+  max-height: 20px;
 }
 
 .home-showcase__links {
@@ -744,7 +758,15 @@ button {
   }
 
   .dev-watermark {
-    display: none;
+    display: none !important;
+  }
+
+  .footer {
+    padding-bottom: calc(16px + env(safe-area-inset-bottom));
+  }
+
+  .home-showcase__info .section-desc {
+    max-width: 100%;
   }
 }
 
@@ -879,6 +901,11 @@ button {
   overflow: hidden;
   border: 1px solid var(--color-border);
   transition: transform var(--transition), box-shadow var(--transition), opacity var(--transition);
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.product-card--animate {
   opacity: 0;
   transform: translateY(24px);
 }
@@ -1061,21 +1088,36 @@ button {
 .about__features {
   list-style: none;
   margin-top: 24px;
+  padding: 0;
 }
 
 .about__features li {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 12px;
   padding: 10px 0;
   font-weight: 500;
+  list-style: none;
 }
 
-.about__features svg {
+.about__features__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   width: 20px;
   height: 20px;
+  min-width: 20px;
+  flex: 0 0 20px;
+  margin-top: 2px;
   color: var(--color-green);
-  flex-shrink: 0;
+}
+
+.about__features__icon svg {
+  display: block;
+  width: 20px;
+  height: 20px;
+  max-width: 20px;
+  max-height: 20px;
 }
 
 /* ---- Contact ---- */
