@@ -15,8 +15,29 @@
 </head>
 <body data-page="home">
 
-  <!-- Desenvolvido por João Victor Seki Mantovani · JVSEKI -->
   <div class="watermark-bg" aria-hidden="true"></div>
+
+  <header class="header" id="header">
+    <div class="container header__inner">
+      <a href="index.html" class="header__logo">
+        <img src="images/logo.png" alt="DS A Fonte" width="52" height="52">
+        <span class="header__brand">
+          <strong>DS A Fonte</strong>
+          <small>Importados Originais</small>
+        </span>
+      </a>
+      <button class="header__toggle" id="menuToggle" aria-label="Abrir menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+      <nav class="header__nav" id="mainNav">
+        <a href="index.html" class="nav-link" data-nav="home">Início</a>
+        <a href="catalogo.html" class="nav-link" data-nav="catalogo">Catálogo</a>
+        <a href="sobre.html" class="nav-link" data-nav="sobre">Sobre</a>
+        <a href="contato.html" class="nav-link" data-nav="contato">Contato</a>
+        <a href="https://wa.me/5518996563430" class="nav-link nav-link--cta" target="_blank" rel="noopener noreferrer">WhatsApp</a>
+      </nav>
+    </div>
+  </header>
 
   <main>
     <section class="hero">
@@ -40,21 +61,21 @@
         <div class="home-cards__grid">
           <a href="catalogo.html" class="home-card">
             <span class="home-card__icon" aria-hidden="true">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16v2H4V4zm0 5h16v11H4V9z"/></svg>
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16v2H4V4zm0 5h16v11H4V9z"/></svg>
             </span>
             <h2>Catálogo</h2>
             <p>Confira nossos produtos e solicite orçamento com tamanho P, M, G ou GG.</p>
           </a>
           <a href="sobre.html" class="home-card">
             <span class="home-card__icon" aria-hidden="true">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M6 20v-1a6 6 0 0112 0v1"/></svg>
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M6 20v-1a6 6 0 0112 0v1"/></svg>
             </span>
             <h2>Sobre</h2>
             <p>Conheça a DS A Fonte e nossa seleção de importados originais.</p>
           </a>
           <a href="contato.html" class="home-card">
             <span class="home-card__icon" aria-hidden="true">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
             </span>
             <h2>Contato</h2>
             <p>WhatsApp, Instagram, telefone e localização no mapa.</p>
@@ -64,7 +85,52 @@
     </section>
   </main>
 
-  <script src="js/layout.js"></script>
+  <footer class="footer">
+    <div class="container footer__inner">
+      <div class="footer__brand">
+        <img src="images/logo.png" alt="DS A Fonte" width="40" height="40">
+        <p>&copy; 2026 DS A Fonte. Todos os direitos reservados.</p>
+      </div>
+      <div class="footer__links">
+        <a href="https://instagram.com/dsafonte_" target="_blank" rel="noopener noreferrer">Instagram</a>
+        <a href="https://wa.me/5518996563430" target="_blank" rel="noopener noreferrer">WhatsApp</a>
+        <a href="catalogo.html">Catálogo</a>
+      </div>
+      <p class="footer__credit">
+        Desenvolvido por <strong>João Victor Seki Mantovani</strong> · <span>JVSEKI</span>
+      </p>
+    </div>
+  </footer>
+
+  <div class="dev-watermark" title="João Victor Seki Mantovani">
+    <span class="dev-watermark__sigla">JVSEKI</span>
+    <span class="dev-watermark__nome">João Victor Seki Mantovani</span>
+  </div>
+
+  <a href="https://wa.me/5518996563430?text=Ol%C3%A1!%20Vim%20pelo%20site%20da%20DS%20A%20Fonte." class="whatsapp-float" target="_blank" rel="noopener noreferrer" aria-label="Falar no WhatsApp">
+    <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.435 9.884-9.883 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+  </a>
+
+  <nav class="mobile-tabs" aria-label="Navegação principal">
+    <a href="index.html" class="mobile-tabs__item" data-nav="home">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M3 9.5L12 3l9 6.5V20a1 1 0 01-1 1h-5v-6H9v6H4a1 1 0 01-1-1V9.5z"/></svg>
+      <span>Início</span>
+    </a>
+    <a href="catalogo.html" class="mobile-tabs__item" data-nav="catalogo">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 4h16v2H4V4zm0 5h16v11H4V9zm3 3v2h2v-2H7zm4 0v2h2v-2h-2z"/></svg>
+      <span>Catálogo</span>
+    </a>
+    <a href="sobre.html" class="mobile-tabs__item" data-nav="sobre">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M6 20v-1a6 6 0 0112 0v1"/></svg>
+      <span>Sobre</span>
+    </a>
+    <a href="contato.html" class="mobile-tabs__item" data-nav="contato">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+      <span>Contato</span>
+    </a>
+  </nav>
+
+  <script src="js/active-nav.js"></script>
   <script src="js/main.js"></script>
 </body>
 </html>

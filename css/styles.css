@@ -58,17 +58,7 @@ body {
   background-repeat: repeat;
 }
 
-.header,
-.hero,
-.catalog,
-.about,
-.contact,
-.footer,
-.page-hero,
-.home-cards,
-.mobile-tabs,
-.dev-watermark,
-.whatsapp-float {
+main {
   position: relative;
   z-index: 1;
 }
@@ -488,10 +478,6 @@ button {
 
 .mobile-tabs__item--active svg {
   stroke: var(--color-yellow);
-}
-
-body {
-  padding-bottom: env(safe-area-inset-bottom);
 }
 
 @media (max-width: 767px) {
@@ -1034,6 +1020,8 @@ body {
 .whatsapp-float svg {
   width: 28px;
   height: 28px;
+  display: block;
+  flex-shrink: 0;
 }
 
 .whatsapp-float:hover {
