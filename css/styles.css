@@ -980,10 +980,11 @@ button {
 }
 
 .product-modal__panel {
-  padding: 20px 20px 28px;
+  padding: 20px 20px 24px;
   display: flex;
   flex-direction: column;
   gap: 18px;
+  min-height: 0;
 }
 
 .product-modal__section {
@@ -1136,35 +1137,35 @@ button {
 }
 
 .product-modal__actions {
-  position: sticky;
-  bottom: 0;
-  padding-top: 4px;
-  background: linear-gradient(180deg, transparent 0%, var(--color-bg-elevated) 24%);
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
+  flex-shrink: 0;
+  padding-top: 16px;
+  margin-top: 8px;
+  border-top: 1px solid var(--color-border);
 }
 
-.product-modal__share-hint {
-  margin: 0;
-  font-size: 0.78rem;
-  color: var(--color-text-muted);
+.product-modal__photo-action {
+  display: block;
+  width: 100%;
+  margin: 10px 0 0;
+  padding: 8px 12px;
+  background: none;
+  border: none;
+  color: var(--color-green);
+  font-size: 0.84rem;
+  font-weight: 600;
   text-align: center;
-  line-height: 1.45;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.product-modal__photo-action:hover,
+.product-modal__photo-action:focus-visible {
+  color: #00c853;
 }
 
 .product-modal__whatsapp {
   margin-top: 0;
-}
-
-.btn--sm {
-  padding: 10px 14px;
-  font-size: 0.82rem;
-}
-
-.product-card__copy-link {
-  width: 100%;
-  margin-top: 8px;
 }
 
 .size-options--shoes {
