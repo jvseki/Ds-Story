@@ -557,8 +557,10 @@ button {
 
 .product-card__view-hint {
   position: absolute;
-  inset: auto 12px 12px 12px;
-  display: inline-flex;
+  left: 12px;
+  right: 12px;
+  bottom: 12px;
+  display: flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
@@ -570,6 +572,7 @@ button {
   font-weight: 600;
   color: #fff;
   z-index: 2;
+  text-align: center;
 }
 
 .product-card__preview:hover .product-card__view-hint,
@@ -772,7 +775,7 @@ button {
 }
 
 .product-modal__video {
-  display: block;
+  display: none;
   width: 100%;
   height: 100%;
   max-width: 100%;
@@ -780,6 +783,14 @@ button {
   object-fit: contain;
   border-radius: 6px;
   background: #000;
+}
+
+.product-modal__stage.has-video .product-modal__video:not([hidden]) {
+  display: block;
+}
+
+.product-modal__stage.has-video .product-modal__image[hidden] {
+  display: none !important;
 }
 
 .product-modal__filmstrip-item--video {
@@ -827,8 +838,12 @@ button {
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   width: 38px;
   height: 38px;
+  padding: 0 0 2px;
   border-radius: 50%;
   background: rgba(13, 13, 13, 0.9);
   border: 1px solid rgba(255, 255, 255, 0.15);
@@ -839,8 +854,8 @@ button {
   z-index: 2;
 }
 
-.product-modal__nav--prev { left: 4px; }
-.product-modal__nav--next { right: 4px; }
+.product-modal__nav--prev { left: 8px; }
+.product-modal__nav--next { right: 8px; }
 
 .product-modal__dots {
   display: flex;
@@ -869,9 +884,10 @@ button {
 
 .product-modal__filmstrip {
   display: flex;
+  justify-content: center;
   gap: 8px;
   margin-top: 12px;
-  padding: 2px 4px 4px;
+  padding: 2px 8px 4px;
   overflow-x: auto;
   scroll-snap-type: x mandatory;
   -webkit-overflow-scrolling: touch;
@@ -903,6 +919,64 @@ button {
   object-position: center;
   background: #111;
   display: block;
+}
+
+.product-modal__filmstrip--compact {
+  justify-content: flex-start;
+  gap: 6px;
+  padding-bottom: 8px;
+  mask-image: linear-gradient(90deg, #000 92%, transparent);
+}
+
+.product-modal__filmstrip--compact .product-modal__filmstrip-item {
+  flex: 0 0 52px;
+}
+
+.product-modal__filmstrip--compact .product-modal__filmstrip-item img {
+  width: 52px;
+  height: 52px;
+}
+
+.catalog-group[data-group="camisetas"] {
+  background: linear-gradient(180deg, rgba(255, 223, 0, 0.04) 0%, var(--color-bg-card) 100%);
+}
+
+.catalog-group[data-group="camisetas"] .catalog-group__grid {
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+}
+
+.catalog-group[data-group="bermudas"] {
+  border-color: rgba(0, 151, 57, 0.2);
+}
+
+.catalog-group[data-group="nike"] {
+  background: linear-gradient(180deg, rgba(255, 223, 0, 0.08) 0%, var(--color-bg-card) 100%);
+  border-color: rgba(255, 223, 0, 0.25);
+}
+
+.product-card--quote .product-card__preview {
+  aspect-ratio: 4 / 5;
+  background: linear-gradient(180deg, #111 0%, #0a0a0a 100%);
+}
+
+.product-card--quote .product-card__preview img {
+  padding: 12px;
+}
+
+.product-card--quote .product-card__price--quote {
+  font-size: 1.05rem;
+}
+
+.product-card--catalogo .product-card__photos-badge {
+  font-size: 0.68rem;
+  padding: 4px 10px;
+  background: rgba(255, 223, 0, 0.15);
+  border: 1px solid rgba(255, 223, 0, 0.35);
+  color: var(--color-yellow);
+}
+
+.product-card__tag--conjunto {
+  background: rgba(0, 151, 57, 0.9);
 }
 
 .product-modal__panel {
@@ -987,10 +1061,53 @@ button {
   align-items: center;
   justify-content: space-between;
   gap: 12px;
+  width: 100%;
   padding: 12px 14px;
   background: rgba(255, 255, 255, 0.03);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-sm);
+  cursor: pointer;
+  text-align: left;
+  transition: var(--transition);
+}
+
+.product-modal__variant-item.active,
+.product-modal__variant-item:hover {
+  border-color: var(--color-yellow);
+  background: rgba(255, 223, 0, 0.08);
+}
+
+.variant-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.variant-options--modal {
+  flex-direction: column;
+}
+
+.variant-btn {
+  padding: 10px 14px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--color-border);
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--color-text);
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.variant-btn.active,
+.variant-btn:hover {
+  border-color: var(--color-yellow);
+  background: rgba(255, 223, 0, 0.12);
+  color: #fff;
+}
+
+.product-card__variantes-pick {
+  margin-bottom: 14px;
 }
 
 .product-modal__variant-name {
@@ -1023,10 +1140,31 @@ button {
   bottom: 0;
   padding-top: 4px;
   background: linear-gradient(180deg, transparent 0%, var(--color-bg-elevated) 24%);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.product-modal__share-hint {
+  margin: 0;
+  font-size: 0.78rem;
+  color: var(--color-text-muted);
+  text-align: center;
+  line-height: 1.45;
 }
 
 .product-modal__whatsapp {
   margin-top: 0;
+}
+
+.btn--sm {
+  padding: 10px 14px;
+  font-size: 0.82rem;
+}
+
+.product-card__copy-link {
+  width: 100%;
+  margin-top: 8px;
 }
 
 .size-options--shoes {
