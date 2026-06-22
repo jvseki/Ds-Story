@@ -2,13 +2,14 @@
 
 const WHATSAPP_NUMBER = '5518996563430';
 const TAMANHOS_ROUPA = ['P', 'M', 'G', 'GG'];
+const TAMANHOS_INFANTIL = ['2', '4', '6', '8', '10', '12', '14'];
 const TAMANHOS_TENIS = ['38', '39', '40', '41', '42', '43', '44'];
 
 const GRUPOS = [
   {
     id: 'copa',
     titulo: 'Copa do Mundo & Seleção',
-    descricao: 'Camisas retrô, kits femininos e peças da Seleção Brasileira. Época de Copa!'
+    descricao: 'Camisas retrô, kits, polos, bonés e moda blogueirinha da Seleção. Época de Copa!'
   },
   {
     id: 'oculos',
@@ -92,6 +93,92 @@ const produtos = [
     ],
     descricao: 'Kit feminino CBF para a Copa 2026. Baby look, shortinho e chapéu — monte seu look de torcedora.',
     tamanhos: TAMANHOS_ROUPA
+  },
+  {
+    id: 'conjunto-virginia',
+    nome: 'Conjunto da Virgínia',
+    categoria: 'copa',
+    categoriaLabel: 'Copa',
+    grupo: 'copa',
+    preco: 'R$ 149,99',
+    promo: 'Moda Blogueirinha',
+    video: 'images/produtos/conjunto-virginia/video.mp4',
+    imagens: imgs('conjunto-virginia', 2),
+    descricao: 'Conjunto crop + short verde e amarelo Brasil. Moda blogueirinha — veja o vídeo no produto.',
+    tamanhos: TAMANHOS_ROUPA
+  },
+  {
+    id: 'kit-casal-brasil',
+    nome: 'Kit Casal Seleção',
+    categoria: 'copa',
+    categoriaLabel: 'Copa',
+    grupo: 'copa',
+    variantes: [
+      { nome: 'Amarelo Canarinho', preco: 'R$ 319,99' },
+      { nome: 'Azul', preco: 'R$ 319,99' }
+    ],
+    imagens: imgs('kit-casal-brasil', 8),
+    legendas: [
+      'Kit casal amarelo',
+      'Kit casal amarelo',
+      'Banner kit casal',
+      'Modelo feminino amarelo',
+      'Detalhe amarelo',
+      'Kit casal azul',
+      'Modelo azul',
+      'Kit casal azul shopping'
+    ],
+    descricao: 'Kit casal Seleção Brasileira — camisa + short. Amarelo ou azul, perfeito para torcer juntos.',
+    tamanhos: TAMANHOS_ROUPA
+  },
+  {
+    id: 'baby-look-brasil',
+    nome: 'Baby Look Seleção 2026',
+    categoria: 'copa',
+    categoriaLabel: 'Copa',
+    grupo: 'copa',
+    variantes: [
+      { nome: 'Azul 2026', preco: 'R$ 159,99' },
+      { nome: 'Amarelinha 2026', preco: 'R$ 159,99' }
+    ],
+    imagens: imgs('baby-look-brasil', 2),
+    legendas: ['Baby look azul 2026', 'Baby look azul — modelo'],
+    descricao: 'Baby look feminino CBF edição 2026. Azul ou amarelinha — consulte disponibilidade.',
+    tamanhos: TAMANHOS_ROUPA
+  },
+  {
+    id: 'polo-treino-brasil',
+    nome: 'Polo Treino Seleção',
+    categoria: 'copa',
+    categoriaLabel: 'Copa',
+    grupo: 'copa',
+    preco: 'R$ 99,99',
+    promo: 'Patrocínio Guaraná Antarctica',
+    imagens: imgs('polo-treino-brasil', 6),
+    descricao: 'Polo de treino oficial CBF com patrocínios. Amarelo, azul, preto e ciano — várias cores.',
+    tamanhos: TAMANHOS_ROUPA
+  },
+  {
+    id: 'bone-selecao-brasil',
+    nome: 'Boné Seleção Brasil',
+    categoria: 'copa',
+    categoriaLabel: 'Copa',
+    grupo: 'copa',
+    preco: 'R$ 59,99',
+    imagens: imgs('bone-selecao-brasil', 3),
+    descricao: 'Bonés oficiais CBF com patch Itaú. Várias cores — amarelo, azul, preto, branco e mais.',
+    tamanhos: null
+  },
+  {
+    id: 'conjunto-infantil-brasil',
+    nome: 'Conjunto Infantil Seleção',
+    categoria: 'copa',
+    categoriaLabel: 'Copa',
+    grupo: 'copa',
+    preco: 'R$ 59,99',
+    imagens: imgs('conjunto-infantil-brasil', 3),
+    descricao: 'Conjunto infantil camisa + shorts Seleção Brasileira. Tamanhos do 2 ao 14 anos.',
+    tamanhos: TAMANHOS_INFANTIL
   },
   {
     id: 'oakley-thump',
@@ -283,6 +370,23 @@ function getImagens(produto) {
   return produto.imagens?.length ? produto.imagens : [produto.imagem];
 }
 
+function getMidias(produto) {
+  const items = [];
+  if (produto.video) {
+    items.push({
+      tipo: 'video',
+      src: produto.video,
+      poster: getImagens(produto)[0]
+    });
+  }
+  getImagens(produto).forEach(src => items.push({ tipo: 'imagem', src }));
+  return items;
+}
+
+function getMidiaCount(produto) {
+  return getMidias(produto).length;
+}
+
 function formatPreco(produto) {
   if (produto.preco) return produto.preco;
   return 'Solicitar orçamento';
@@ -353,7 +457,11 @@ function renderPrecoHTML(produto) {
 function renderSizesHTML(produto, disabled = false) {
   if (!produto.tamanhos?.length) return '';
 
-  const label = produto.categoria === 'tenis' ? 'Numeração' : 'Tamanho';
+  const label = produto.categoria === 'tenis'
+    ? 'Numeração'
+    : produto.tamanhos === TAMANHOS_INFANTIL
+      ? 'Tamanho infantil'
+      : 'Tamanho';
   const gridClass = produto.tamanhos.length > 4 ? 'size-options size-options--shoes' : 'size-options';
 
   return `
@@ -372,13 +480,14 @@ function getLegenda(produto, index) {
 
 function renderPreviewHTML(produto) {
   const imagens = getImagens(produto);
-  const count = imagens.length;
+  const count = getMidiaCount(produto);
 
   return `
     <button type="button" class="product-card__preview" data-open-product="${produto.id}" aria-label="Ver fotos de ${produto.nome}">
       <img src="${imagens[0]}" alt="${produto.nome}" loading="lazy">
       <span class="product-card__tag">${produto.categoriaLabel}</span>
-      ${count > 1 ? `<span class="product-card__photos-badge">${count} fotos</span>` : ''}
+      ${produto.video ? '<span class="product-card__video-badge">Vídeo</span>' : ''}
+      ${count > 1 ? `<span class="product-card__photos-badge">${count} mídias</span>` : ''}
       <span class="product-card__view-hint">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg>
         Ver produto
@@ -469,7 +578,11 @@ function renderModalPriceHTML(produto) {
 function renderModalSizesHTML(produto) {
   if (!produto.tamanhos?.length) return '';
 
-  const label = produto.categoria === 'tenis' ? 'Numeração' : 'Tamanho';
+  const label = produto.categoria === 'tenis'
+    ? 'Numeração'
+    : produto.tamanhos === TAMANHOS_INFANTIL
+      ? 'Tamanho infantil'
+      : 'Tamanho';
   const gridClass = produto.tamanhos.length > 4 ? 'size-options size-options--shoes' : 'size-options';
 
   return `
@@ -481,24 +594,42 @@ function renderModalSizesHTML(produto) {
 }
 
 function updateModalPhoto(produto, index) {
-  const imagens = getImagens(produto);
-  const safeIndex = ((index % imagens.length) + imagens.length) % imagens.length;
+  const midias = getMidias(produto);
+  const safeIndex = ((index % midias.length) + midias.length) % midias.length;
   modalState.photoIndex = safeIndex;
 
   const imgEl = document.getElementById('productModalImage');
+  const videoEl = document.getElementById('productModalVideo');
   const counterEl = document.getElementById('productModalCounter');
   const captionEl = document.getElementById('productModalCaption');
   const thumbsEl = document.getElementById('productModalThumbs');
   const dotsEl = document.getElementById('productModalDots');
-  const legenda = getLegenda(produto, safeIndex);
+  const item = midias[safeIndex];
+  const legendaIndex = produto.video ? safeIndex - 1 : safeIndex;
+  const legenda = item.tipo === 'imagem' && legendaIndex >= 0 ? getLegenda(produto, legendaIndex) : null;
 
-  imgEl.src = imagens[safeIndex];
-  imgEl.alt = legenda ? `${produto.nome} — ${legenda}` : `${produto.nome} — foto ${safeIndex + 1}`;
-  counterEl.textContent = `${safeIndex + 1} / ${imagens.length}`;
+  if (item.tipo === 'video') {
+    imgEl.hidden = true;
+    videoEl.hidden = false;
+    videoEl.src = item.src;
+    videoEl.poster = item.poster || '';
+    videoEl.load();
+    videoEl.play().catch(() => {});
+  } else {
+    videoEl.hidden = true;
+    videoEl.pause();
+    videoEl.removeAttribute('src');
+    imgEl.hidden = false;
+    imgEl.src = item.src;
+    imgEl.alt = legenda ? `${produto.nome} — ${legenda}` : `${produto.nome} — foto ${safeIndex + 1}`;
+  }
+
+  counterEl.textContent = `${safeIndex + 1} / ${midias.length}`;
 
   if (captionEl) {
-    captionEl.textContent = legenda || '';
-    captionEl.hidden = !legenda;
+    const captionText = item.tipo === 'video' ? 'Vídeo do produto' : (legenda || '');
+    captionEl.textContent = captionText;
+    captionEl.hidden = !captionText;
   }
 
   thumbsEl?.querySelectorAll('.product-modal__filmstrip-item').forEach((thumb, i) => {
@@ -513,7 +644,7 @@ function updateModalPhoto(produto, index) {
 
   const prevBtn = document.querySelector('.product-modal__nav--prev');
   const nextBtn = document.querySelector('.product-modal__nav--next');
-  const multi = imagens.length > 1;
+  const multi = midias.length > 1;
   if (prevBtn) prevBtn.style.visibility = multi ? 'visible' : 'hidden';
   if (nextBtn) nextBtn.style.visibility = multi ? 'visible' : 'hidden';
   if (dotsEl) dotsEl.hidden = !multi;
@@ -527,7 +658,7 @@ function openProductModal(produtoId) {
 
   modalState = { produtoId, photoIndex: 0, selectedSize: null };
 
-  const imagens = getImagens(produto);
+  const midias = getMidias(produto);
   const needsSize = Boolean(produto.tamanhos?.length);
   const btnText = needsSize ? 'Escolha o tamanho' : 'Solicitar Orçamento';
 
@@ -545,18 +676,26 @@ function openProductModal(produtoId) {
   whatsappBtn.querySelector('.btn-text').textContent = btnText;
 
   const thumbsEl = document.getElementById('productModalThumbs');
-  thumbsEl.innerHTML = imagens.map((src, i) => {
-    const legenda = getLegenda(produto, i);
+  thumbsEl.innerHTML = midias.map((item, i) => {
+    if (item.tipo === 'video') {
+      return `
+        <button type="button" class="product-modal__filmstrip-item product-modal__filmstrip-item--video${i === 0 ? ' active' : ''}" data-photo-index="${i}" aria-label="Vídeo">
+          <span>▶</span>
+        </button>
+      `;
+    }
+    const legendaIndex = produto.video ? i - 1 : i;
+    const legenda = getLegenda(produto, legendaIndex);
     return `
       <button type="button" class="product-modal__filmstrip-item${i === 0 ? ' active' : ''}" data-photo-index="${i}" aria-label="${legenda || `Foto ${i + 1}`}">
-        <img src="${src}" alt="" loading="lazy">
+        <img src="${item.src}" alt="" loading="lazy">
       </button>
     `;
   }).join('');
 
   const dotsEl = document.getElementById('productModalDots');
-  dotsEl.innerHTML = imagens.map((_, i) => `
-    <button type="button" class="product-modal__dot${i === 0 ? ' active' : ''}" data-photo-index="${i}" aria-label="Ir para foto ${i + 1}" aria-selected="${i === 0 ? 'true' : 'false'}"></button>
+  dotsEl.innerHTML = midias.map((_, i) => `
+    <button type="button" class="product-modal__dot${i === 0 ? ' active' : ''}" data-photo-index="${i}" aria-label="Ir para mídia ${i + 1}" aria-selected="${i === 0 ? 'true' : 'false'}"></button>
   `).join('');
 
   updateModalPhoto(produto, 0);
@@ -572,6 +711,12 @@ function openProductModal(produtoId) {
 function closeProductModal() {
   const modal = document.getElementById('productModal');
   if (!modal) return;
+
+  const videoEl = document.getElementById('productModalVideo');
+  if (videoEl) {
+    videoEl.pause();
+    videoEl.removeAttribute('src');
+  }
 
   modal.classList.remove('open');
   modal.setAttribute('aria-hidden', 'true');
