@@ -773,6 +773,27 @@ button {
   box-sizing: border-box;
 }
 
+.product-modal__stage.is-loading .product-modal__image,
+.product-modal__stage.is-loading .product-modal__video {
+  opacity: 0;
+}
+
+.product-modal__stage.is-loading::before {
+  content: '';
+  position: absolute;
+  width: 28px;
+  height: 28px;
+  border: 2px solid rgba(255, 255, 255, 0.12);
+  border-top-color: var(--color-yellow);
+  border-radius: 50%;
+  animation: modal-spin 0.65s linear infinite;
+  z-index: 1;
+}
+
+@keyframes modal-spin {
+  to { transform: rotate(360deg); }
+}
+
 .product-modal__image {
   display: block;
   width: 100%;
@@ -782,6 +803,7 @@ button {
   object-fit: contain;
   object-position: center;
   border-radius: 6px;
+  transition: opacity 0.2s ease;
 }
 
 .product-modal__video {
@@ -1517,6 +1539,34 @@ button {
 .whatsapp-float:hover {
   transform: scale(1.08);
   box-shadow: 0 6px 28px rgba(37, 211, 102, 0.5);
+}
+
+.dev-watermark {
+  position: fixed;
+  bottom: 24px;
+  left: 20px;
+  z-index: 899;
+  font-family: var(--font-display);
+  font-size: 0.85rem;
+  letter-spacing: 0.22em;
+  color: rgba(255, 255, 255, 0.22);
+  text-decoration: none;
+  user-select: none;
+  transition: color var(--transition), opacity var(--transition);
+  pointer-events: auto;
+}
+
+.dev-watermark:hover,
+.dev-watermark:focus-visible {
+  color: rgba(255, 223, 0, 0.55);
+  outline: none;
+}
+
+@media (max-width: 767px) {
+  .dev-watermark {
+    bottom: 92px;
+    font-size: 0.75rem;
+  }
 }
 
 /* ---- Responsive ---- */

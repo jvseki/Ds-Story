@@ -1180,6 +1180,65 @@ function renderModalSizesHTML(produto) {
   `;
 }
 
+let modalImageToken = 0;
+
+function resetModalGallery() {
+  modalImageToken += 1;
+
+  const imgEl = document.getElementById('productModalImage');
+  const videoEl = document.getElementById('productModalVideo');
+  const stageEl = document.getElementById('productModalStage');
+  const captionEl = document.getElementById('productModalCaption');
+  const counterEl = document.getElementById('productModalCounter');
+
+  stageEl?.classList.remove('has-video');
+  stageEl?.classList.add('is-loading');
+
+  if (imgEl) {
+    imgEl.hidden = true;
+    imgEl.removeAttribute('src');
+    imgEl.alt = '';
+  }
+
+  if (videoEl) {
+    videoEl.pause();
+    videoEl.hidden = true;
+    videoEl.removeAttribute('src');
+    videoEl.load();
+  }
+
+  if (captionEl) {
+    captionEl.textContent = '';
+    captionEl.hidden = true;
+  }
+
+  if (counterEl) counterEl.textContent = '';
+}
+
+function showModalImage(produtoId, photoIndex, src, alt) {
+  const token = modalImageToken;
+  const imgEl = document.getElementById('productModalImage');
+  const stageEl = document.getElementById('productModalStage');
+  if (!imgEl || !stageEl || !src) return;
+
+  stageEl.classList.add('is-loading');
+  imgEl.hidden = true;
+
+  const loader = new Image();
+  const reveal = () => {
+    if (token !== modalImageToken) return;
+    if (modalState.produtoId !== produtoId || modalState.photoIndex !== photoIndex) return;
+    imgEl.src = src;
+    imgEl.alt = alt;
+    imgEl.hidden = false;
+    stageEl.classList.remove('is-loading');
+  };
+
+  loader.onload = reveal;
+  loader.onerror = reveal;
+  loader.src = src;
+}
+
 function updateModalPhoto(produto, index) {
   const midias = getMidias(produto);
   if (!midias.length) return;
@@ -1200,6 +1259,7 @@ function updateModalPhoto(produto, index) {
   stageEl?.classList.toggle('has-video', item.tipo === 'video');
 
   if (item.tipo === 'video') {
+    stageEl?.classList.remove('is-loading');
     if (imgEl) {
       imgEl.hidden = true;
       imgEl.removeAttribute('src');
@@ -1217,11 +1277,11 @@ function updateModalPhoto(produto, index) {
       videoEl.removeAttribute('src');
       videoEl.load();
     }
-    imgEl.hidden = false;
-    imgEl.src = item.src;
+    stageEl?.classList.remove('has-video');
     const imgIndex = imagens.indexOf(item.src);
     const legenda = imgIndex >= 0 ? getLegenda(produto, imgIndex) : null;
-    imgEl.alt = legenda ? `${produto.nome} — ${legenda}` : `${produto.nome} — foto ${imgIndex + 1}`;
+    const alt = legenda ? `${produto.nome} — ${legenda}` : `${produto.nome} — foto ${imgIndex + 1}`;
+    showModalImage(produto.id, safeIndex, item.src, alt);
   }
 
   if (counterEl) counterEl.textContent = `${safeIndex + 1} / ${midias.length}`;
@@ -1255,6 +1315,7 @@ function openProductModal(produtoId) {
   const modal = document.getElementById('productModal');
   if (!produto || !modal) return;
 
+  resetModalGallery();
   modalState = { produtoId, photoIndex: 0, selectedSize: null, selectedVariant: null };
 
   const midias = getMidias(produto);
@@ -1299,21 +1360,7 @@ function closeProductModal() {
   const modal = document.getElementById('productModal');
   if (!modal) return;
 
-  const videoEl = document.getElementById('productModalVideo');
-  const imgEl = document.getElementById('productModalImage');
-  const stageEl = document.getElementById('productModalStage');
-
-  if (videoEl) {
-    videoEl.pause();
-    videoEl.removeAttribute('src');
-    videoEl.hidden = true;
-    videoEl.load();
-  }
-  if (imgEl) {
-    imgEl.hidden = false;
-    imgEl.removeAttribute('src');
-  }
-  stageEl?.classList.remove('has-video');
+  resetModalGallery();
 
   modal.classList.remove('open');
   modal.setAttribute('aria-hidden', 'true');
