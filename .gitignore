@@ -19,3 +19,7 @@ desktop.ini
 .env
 .env.*
 !.env.example
+
+# Arquivos locais (não fazem parte do site publicado)
+danielloja/
+VIDEOS PARA VC OLHAR/
