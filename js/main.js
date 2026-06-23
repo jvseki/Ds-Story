@@ -1181,6 +1181,18 @@ function renderModalSizesHTML(produto) {
 }
 
 let modalImageToken = 0;
+let modalEventsAbort = null;
+
+const BLANK_IMAGE = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
+
+function clearModalPanel() {
+  document.getElementById('productModalCategory').textContent = '';
+  document.getElementById('productModalTitle').textContent = '';
+  document.getElementById('productModalDesc').textContent = '';
+  document.getElementById('productModalPrice').innerHTML = '';
+  document.getElementById('productModalSizes').innerHTML = '';
+  document.getElementById('productModalDots').innerHTML = '';
+}
 
 function resetModalGallery() {
   modalImageToken += 1;
@@ -1190,13 +1202,14 @@ function resetModalGallery() {
   const stageEl = document.getElementById('productModalStage');
   const captionEl = document.getElementById('productModalCaption');
   const counterEl = document.getElementById('productModalCounter');
+  const modal = document.getElementById('productModal');
 
   stageEl?.classList.remove('has-video');
   stageEl?.classList.add('is-loading');
 
   if (imgEl) {
     imgEl.hidden = true;
-    imgEl.removeAttribute('src');
+    imgEl.src = BLANK_IMAGE;
     imgEl.alt = '';
   }
 
@@ -1213,16 +1226,20 @@ function resetModalGallery() {
   }
 
   if (counterEl) counterEl.textContent = '';
+  modal?.classList.add('is-switching');
 }
 
 function showModalImage(produtoId, photoIndex, src, alt) {
   const token = modalImageToken;
   const imgEl = document.getElementById('productModalImage');
   const stageEl = document.getElementById('productModalStage');
+  const modal = document.getElementById('productModal');
   if (!imgEl || !stageEl || !src) return;
 
   stageEl.classList.add('is-loading');
   imgEl.hidden = true;
+  imgEl.src = BLANK_IMAGE;
+  imgEl.alt = '';
 
   const loader = new Image();
   const reveal = () => {
@@ -1232,11 +1249,14 @@ function showModalImage(produtoId, photoIndex, src, alt) {
     imgEl.alt = alt;
     imgEl.hidden = false;
     stageEl.classList.remove('is-loading');
+    modal?.classList.remove('is-switching');
   };
 
   loader.onload = reveal;
   loader.onerror = reveal;
   loader.src = src;
+
+  if (loader.complete) reveal();
 }
 
 function updateModalPhoto(produto, index) {
@@ -1260,6 +1280,7 @@ function updateModalPhoto(produto, index) {
 
   if (item.tipo === 'video') {
     stageEl?.classList.remove('is-loading');
+    document.getElementById('productModal')?.classList.remove('is-switching');
     if (imgEl) {
       imgEl.hidden = true;
       imgEl.removeAttribute('src');
@@ -1315,7 +1336,9 @@ function openProductModal(produtoId) {
   const modal = document.getElementById('productModal');
   if (!produto || !modal) return;
 
+  modalEventsAbort?.abort();
   resetModalGallery();
+  modal.classList.remove('is-closing');
   modalState = { produtoId, photoIndex: 0, selectedSize: null, selectedVariant: null };
 
   const midias = getMidias(produto);
@@ -1360,40 +1383,49 @@ function closeProductModal() {
   const modal = document.getElementById('productModal');
   if (!modal) return;
 
+  modalEventsAbort?.abort();
   resetModalGallery();
+  clearModalPanel();
 
-  modal.classList.remove('open');
+  modal.classList.add('is-closing');
+  modal.classList.remove('open', 'is-switching');
   modal.setAttribute('aria-hidden', 'true');
   document.body.style.overflow = '';
   clearProductShareUrl();
   modalState = { produtoId: null, photoIndex: 0, selectedSize: null, selectedVariant: null };
+
+  requestAnimationFrame(() => modal.classList.remove('is-closing'));
 }
 
 function bindModalEvents(produto) {
   const modal = document.getElementById('productModal');
   if (!modal) return;
 
+  modalEventsAbort?.abort();
+  modalEventsAbort = new AbortController();
+  const { signal } = modalEventsAbort;
+
   modal.querySelectorAll('[data-close-modal]').forEach(el => {
-    el.onclick = closeProductModal;
+    el.addEventListener('click', closeProductModal, { signal });
   });
 
   modal.querySelector('.product-modal__nav--prev')?.addEventListener('click', () => {
     updateModalPhoto(produto, modalState.photoIndex - 1);
-  });
+  }, { signal });
 
   modal.querySelector('.product-modal__nav--next')?.addEventListener('click', () => {
     updateModalPhoto(produto, modalState.photoIndex + 1);
-  });
+  }, { signal });
 
   modal.querySelectorAll('[data-photo-index]').forEach(el => {
-    el.onclick = () => updateModalPhoto(produto, Number(el.dataset.photoIndex));
+    el.addEventListener('click', () => updateModalPhoto(produto, Number(el.dataset.photoIndex)), { signal });
   });
 
   const whatsappBtn = document.getElementById('productModalWhatsapp');
   const panel = document.getElementById('productModalPanel');
 
   panel.querySelectorAll('.variant-btn').forEach(btn => {
-    btn.onclick = () => {
+    btn.addEventListener('click', () => {
       panel.querySelectorAll('.variant-btn').forEach(b => {
         b.classList.remove('active');
         b.setAttribute('aria-pressed', 'false');
@@ -1403,11 +1435,11 @@ function bindModalEvents(produto) {
       modalState.selectedVariant = getVariante(produto, Number(btn.dataset.variantIndex));
       updateModalPhoto(produto, Number(btn.dataset.fotoIndex));
       updateOrderButtonState(panel, produto);
-    };
+    }, { signal });
   });
 
   panel.querySelectorAll('.size-btn').forEach(btn => {
-    btn.onclick = () => {
+    btn.addEventListener('click', () => {
       panel.querySelectorAll('.size-btn').forEach(b => {
         b.classList.remove('active');
         b.setAttribute('aria-pressed', 'false');
@@ -1416,10 +1448,10 @@ function bindModalEvents(produto) {
       btn.setAttribute('aria-pressed', 'true');
       modalState.selectedSize = btn.dataset.size;
       updateOrderButtonState(panel, produto);
-    };
+    }, { signal });
   });
 
-  whatsappBtn.onclick = () => {
+  whatsappBtn.addEventListener('click', () => {
     if (!canSubmitOrder(produto, modalState.selectedSize, modalState.selectedVariant)) return;
     solicitarOrcamento(
       produto,
@@ -1427,7 +1459,7 @@ function bindModalEvents(produto) {
       modalState.selectedVariant,
       getActivePhotoUrl(produto)
     );
-  };
+  }, { signal });
 }
 
 function bindPhotoShareButton(produto) {
