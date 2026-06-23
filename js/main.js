@@ -18,8 +18,8 @@ const GRUPOS = [
   },
   {
     id: 'camisetas',
-    titulo: 'Camisetas & Conjuntos',
-    descricao: 'Camisetas importadas, conjuntos streetwear e modelos oversized.'
+    titulo: 'Camisetas & Oversized',
+    descricao: 'Camisetas importadas e modelos oversized streetwear.'
   },
   {
     id: 'bermudas',
@@ -47,9 +47,14 @@ const GRUPOS = [
     descricao: 'Polos esportivos de alta performance.'
   },
   {
+    id: 'tenis',
+    titulo: 'Tênis',
+    descricao: 'Mizuno, Nike e modelos importados — consulte numeração.'
+  },
+  {
     id: 'acessorios',
-    titulo: 'Bonés & Acessórios',
-    descricao: 'Bonés importados e acessórios exclusivos.'
+    titulo: 'Bonés',
+    descricao: 'Bonés importados — vários modelos disponíveis.'
   }
 ];
 
@@ -57,6 +62,46 @@ function imgs(id, count) {
   return Array.from({ length: count }, (_, i) =>
     `images/produtos/${id}/${String(i + 1).padStart(2, '0')}.jpeg`
   );
+}
+
+function variantesFotos(count, preco, prefix = 'Modelo') {
+  return Array.from({ length: count }, (_, i) => ({
+    nome: `${prefix} ${i + 1}`,
+    preco,
+    foto: i
+  }));
+}
+
+function somaPrecosVariantes(variantes) {
+  let total = 0;
+  variantes.forEach(v => {
+    if (!v.preco || v.nome === 'Kit completo') return;
+    const n = parseFloat(String(v.preco).replace(/[^\d,]/g, '').replace(',', '.'));
+    if (!isNaN(n)) total += n;
+  });
+  return `R$ ${total.toFixed(2).replace('.', ',')}`;
+}
+
+function variantesKitCompleto(variantes) {
+  const items = variantes.filter(v => v.nome !== 'Kit completo');
+  return [...items, { nome: 'Kit completo', preco: somaPrecosVariantes(items), foto: 0 }];
+}
+
+const POLO_TREINO_CORES = [
+  { nome: 'Amarelo', arquivo: '01.jpeg' },
+  { nome: 'Ciano', arquivo: '02.jpeg' },
+  { nome: 'Azul', arquivo: '05.jpeg' },
+  { nome: 'Preto', arquivo: '09.jpeg' }
+];
+
+function openWhatsApp(url) {
+  const mobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+  if (mobile) {
+    window.location.assign(url);
+    return;
+  }
+  const popup = window.open(url, '_blank', 'noopener,noreferrer');
+  if (popup) popup.opener = null;
 }
 
 const produtos = [
@@ -148,8 +193,15 @@ const produtos = [
     categoriaLabel: 'Copa',
     grupo: 'copa',
     preco: 'R$ 99,99',
-    imagens: imgs('polo-treino-brasil', 16),
-    descricao: 'Polo de treino CBF. Amarelo, azul, preto e ciano — várias cores disponíveis.',
+    variantes: POLO_TREINO_CORES.map(({ nome }, i) => ({
+      nome,
+      preco: 'R$ 99,99',
+      foto: i
+    })),
+    imagens: POLO_TREINO_CORES.map(({ arquivo }) => `images/produtos/polo-treino-brasil/${arquivo}`),
+    legendas: POLO_TREINO_CORES.map(({ nome }) => nome),
+    galeriaCompacta: true,
+    descricao: 'Polo de treino CBF Guaraná — amarelo, azul, preto ou ciano. Escolha a cor e o tamanho.',
     tamanhos: TAMANHOS_ROUPA
   },
   {
@@ -193,9 +245,16 @@ const produtos = [
     grupo: 'camisetas',
     preco: 'R$ 50,00',
     promo: '4 camisas por R$ 120,00',
+    variantes: Array.from({ length: 10 }, (_, i) => ({
+      nome: `Estampa ${i + 1}`,
+      preco: 'R$ 50,00',
+      foto: i + 1
+    })),
     imagens: imgs('camisas-maresia', 11),
+    legendas: ['Anúncio', ...Array.from({ length: 10 }, (_, i) => `Estampa ${i + 1}`)],
+    imagemCapaIndex: 1,
     galeriaCompacta: true,
-    descricao: 'Camisetas Maresia estampadas. Estoque muda diariamente — chame para fotos atualizadas.',
+    descricao: 'Camisetas Maresia estampadas. Escolha a estampa e o tamanho — estoque muda diariamente.',
     tamanhos: TAMANHOS_ROUPA
   },
   {
@@ -318,90 +377,90 @@ const produtos = [
   {
     id: 'conjunto-diesel-city',
     nome: 'Conjunto Diesel & City Denim',
-    categoria: 'camisetas',
-    categoriaLabel: 'Conjunto',
-    grupo: 'camisetas',
+    categoria: 'kits',
+    categoriaLabel: 'Kit',
+    grupo: 'kits',
     preco: null,
     imagens: imgs('conjunto-diesel-city', 1),
     descricao: 'Moletom Diesel, calça City Denim, boné, cinto e New Balance — look streetwear completo.',
-    tamanhos: TAMANHOS_ROUPA
+    tamanhos: null
   },
   {
     id: 'conjunto-lacoste-cinza',
     nome: 'Conjunto Lacoste Cinza',
-    categoria: 'camisetas',
-    categoriaLabel: 'Conjunto',
-    grupo: 'camisetas',
+    categoria: 'kits',
+    categoriaLabel: 'Kit',
+    grupo: 'kits',
     preco: null,
     imagens: imgs('conjunto-lacoste-cinza', 1),
     descricao: 'Camiseta Lacoste, calça Titular destroyed, boné Lacoste, relógio e Nike platform.',
-    tamanhos: TAMANHOS_ROUPA
+    tamanhos: null
   },
   {
     id: 'conjunto-lacoste-vermelho',
     nome: 'Conjunto Lacoste Vermelho',
-    categoria: 'camisetas',
-    categoriaLabel: 'Conjunto',
-    grupo: 'camisetas',
+    categoria: 'kits',
+    categoriaLabel: 'Kit',
+    grupo: 'kits',
     preco: null,
     imagens: imgs('conjunto-lacoste-vermelho', 1),
     descricao: 'Camiseta Lacoste vermelha, calça Creed destroyed, boné e tênis branco com detalhes azul/vermelho.',
-    tamanhos: TAMANHOS_ROUPA
+    tamanhos: null
   },
   {
     id: 'conjunto-lacoste-azul',
     nome: 'Conjunto Lacoste Azul',
-    categoria: 'camisetas',
-    categoriaLabel: 'Conjunto',
-    grupo: 'camisetas',
+    categoria: 'kits',
+    categoriaLabel: 'Kit',
+    grupo: 'kits',
     preco: null,
     imagens: imgs('conjunto-lacoste-azul', 1),
     descricao: 'Camiseta e boné Lacoste azul bebê, calça City Denim destroyed e Mizuno Wave Prophecy.',
-    tamanhos: TAMANHOS_ROUPA
+    tamanhos: null
   },
   {
     id: 'conjunto-quiksilver-preto',
     nome: 'Conjunto Quiksilver Preto',
-    categoria: 'camisetas',
-    categoriaLabel: 'Conjunto',
-    grupo: 'camisetas',
+    categoria: 'kits',
+    categoriaLabel: 'Kit',
+    grupo: 'kits',
     preco: null,
     imagens: imgs('conjunto-quiksilver-preto', 1),
     descricao: 'Moletom, calça jeans, boné Quiksilver e Mizuno Wave Prophecy — kit all black.',
-    tamanhos: TAMANHOS_ROUPA
+    tamanhos: null
   },
   {
     id: 'conjunto-philipp-plein',
     nome: 'Conjunto Philipp Plein',
-    categoria: 'camisetas',
-    categoriaLabel: 'Conjunto',
-    grupo: 'camisetas',
+    categoria: 'kits',
+    categoriaLabel: 'Kit',
+    grupo: 'kits',
     preco: null,
     imagens: imgs('conjunto-philipp-plein', 1),
     descricao: 'Camiseta Philipp Plein, calça destroyed, boné Gucci monogram e tênis chunky.',
-    tamanhos: TAMANHOS_ROUPA
+    tamanhos: null
   },
   {
     id: 'conjunto-diesel-branco',
     nome: 'Conjunto Diesel Branco',
-    categoria: 'camisetas',
-    categoriaLabel: 'Conjunto',
-    grupo: 'camisetas',
+    categoria: 'kits',
+    categoriaLabel: 'Kit',
+    grupo: 'kits',
     preco: null,
     imagens: imgs('conjunto-diesel-branco', 1),
     descricao: 'Moletom Diesel splatter branco, calça acid wash, bonés preto e vermelho Diesel.',
-    tamanhos: TAMANHOS_ROUPA
+    tamanhos: null
   },
   {
     id: 'conjunto-lacoste-azul-mizuno',
     nome: 'Conjunto Lacoste & Mizuno',
-    categoria: 'camisetas',
-    categoriaLabel: 'Conjunto',
-    grupo: 'camisetas',
+    categoria: 'kits',
+    categoriaLabel: 'Kit',
+    grupo: 'kits',
     preco: null,
     imagens: imgs('conjunto-lacoste-azul-mizuno', 1),
     descricao: 'Camiseta Lacoste azul, boné, calça City Denim e Mizuno Wave Prophecy azul.',
-    tamanhos: TAMANHOS_ROUPA
+    tamanhos: null
   },
   {
     id: 'oversized-colecao',
@@ -445,11 +504,12 @@ const produtos = [
     variantes: [
       { nome: 'Blusa moletom', preco: 'R$ 179,99' },
       { nome: 'Bermuda Balão', preco: 'R$ 99,99' },
-      { nome: 'Mizuno camaleão', preco: 'R$ 449,99' }
+      { nome: 'Mizuno camaleão', preco: 'R$ 449,99' },
+      { nome: 'Kit completo', preco: 'R$ 729,97', foto: 0 }
     ],
     imagens: imgs('kit-quiksilver-roxo', 1),
     descricao: 'Kit streetwear Quiksilver roxo — moletom, bermuda surf e Mizuno camaleão.',
-    tamanhos: TAMANHOS_ROUPA
+    tamanhos: null
   },
   {
     id: 'kit-quiksilver-preto',
@@ -461,11 +521,12 @@ const produtos = [
     variantes: [
       { nome: 'Blusa moletom', preco: 'R$ 179,99' },
       { nome: 'Boné', preco: 'R$ 59,99' },
-      { nome: 'Mizuno Refletivo', preco: 'R$ 449,99' }
+      { nome: 'Mizuno Refletivo', preco: 'R$ 449,99' },
+      { nome: 'Kit completo', preco: 'R$ 689,97', foto: 0 }
     ],
     imagens: imgs('kit-quiksilver-preto', 1),
     descricao: 'Kit all black Quiksilver — moletom, calça, boné e Mizuno refletivo.',
-    tamanhos: TAMANHOS_ROUPA
+    tamanhos: null
   },
   {
     id: 'kit-quiksilver-typo',
@@ -479,11 +540,12 @@ const produtos = [
       { nome: 'Calça Balão', preco: 'R$ 149,99' },
       { nome: 'Mizuno refletivo', preco: 'R$ 449,99' },
       { nome: 'Lupa', preco: 'R$ 149,99' },
-      { nome: 'Boné', preco: 'R$ 59,99' }
+      { nome: 'Boné', preco: 'R$ 59,99' },
+      { nome: 'Kit completo', preco: 'R$ 1109,95', foto: 0 }
     ],
     imagens: imgs('kit-quiksilver-typo', 1),
     descricao: 'Kit Quiksilver estampa typo — corta vento, calça, Mizuno, lupa e boné.',
-    tamanhos: TAMANHOS_ROUPA
+    tamanhos: null
   },
   {
     id: 'kit-quiksilver-jeans',
@@ -496,22 +558,119 @@ const produtos = [
       { nome: 'Blusa moletom', preco: 'R$ 179,99' },
       { nome: 'Calça Balão', preco: 'R$ 149,99' },
       { nome: 'Mizuno lançamento 2026', preco: 'R$ 499,99' },
-      { nome: 'Boné', preco: 'R$ 59,99' }
+      { nome: 'Boné', preco: 'R$ 59,99' },
+      { nome: 'Kit completo', preco: 'R$ 889,96', foto: 0 }
     ],
     imagens: imgs('kit-quiksilver-jeans', 1),
     descricao: 'Kit Quiksilver com moletom, calça jeans, Mizuno 2026 e boné.',
-    tamanhos: TAMANHOS_ROUPA
+    tamanhos: null
   },
   {
     id: 'bones-colecao',
-    nome: 'Bonés & Acessórios',
+    nome: 'Bonés',
     categoria: 'acessorios',
     categoriaLabel: 'Bonés',
     grupo: 'acessorios',
-    preco: null,
+    preco: 'R$ 59,99',
+    variantes: variantesFotos(16, 'R$ 59,99', 'Boné'),
     imagens: imgs('bones-colecao', 16),
-    descricao: 'Bonés importados e acessórios. Vários modelos — confira a galeria completa.',
+    legendas: Array.from({ length: 16 }, (_, i) => `Boné ${i + 1}`),
+    galeriaCompacta: true,
+    descricao: 'Bonés importados — escolha o modelo e solicite pelo WhatsApp.',
     tamanhos: null
+  },
+  {
+    id: 'mizuno-pro14',
+    nome: 'Mizuno Pro 14',
+    categoria: 'tenis',
+    categoriaLabel: 'Tênis',
+    grupo: 'tenis',
+    preco: 'R$ 499,99',
+    imagens: imgs('mizuno-pro14', 1),
+    descricao: 'Wave Prophecy Pro 14. Diversas combinações — consulte numeração no WhatsApp.',
+    tamanhos: TAMANHOS_TENIS
+  },
+  {
+    id: 'nike-corteiz-am95',
+    nome: 'Nike Air Max 95 Corteiz',
+    categoria: 'tenis',
+    categoriaLabel: 'Tênis',
+    grupo: 'tenis',
+    preco: 'R$ 499,99',
+    imagens: imgs('nike-corteiz-am95', 8),
+    galeriaCompacta: true,
+    descricao: 'Colab Nike x Corteiz Air Max 95. Peça exclusiva — escolha a numeração.',
+    tamanhos: TAMANHOS_TENIS
+  },
+  {
+    id: 'tenis-nacional',
+    nome: 'Tênis Nike & Mizuno Nacional',
+    categoria: 'tenis',
+    categoriaLabel: 'Tênis',
+    grupo: 'tenis',
+    preco: 'R$ 149,99',
+    imagens: imgs('tenis-nacional', 9),
+    descricao: 'Nike Air Max TN e Mizuno nacional. Várias cores — consulte numeração e modelos.',
+    tamanhos: TAMANHOS_TENIS
+  },
+  {
+    id: 'mizuno-lotus',
+    nome: 'Mizuno Flor de Lótus',
+    categoria: 'tenis',
+    categoriaLabel: 'Tênis',
+    grupo: 'tenis',
+    preco: 'R$ 449,99',
+    imagens: imgs('mizuno-lotus', 4),
+    descricao: 'Wave Prophecy com flor de lótus bordada. Branco, roxo e azul disponíveis.',
+    tamanhos: TAMANHOS_TENIS
+  },
+  {
+    id: 'polo-mercedes-bmw',
+    nome: 'Polo Mercedes & BMW',
+    categoria: 'polos',
+    categoriaLabel: 'Polo',
+    grupo: 'polos',
+    preco: 'R$ 79,99',
+    imagens: imgs('polo-mercedes-bmw', 3),
+    legendas: ['Frente', 'Costas', 'Detalhe'],
+    descricao: 'Polos dry fit Mercedes e BMW. Escolha o tamanho — as fotos mostram frente, costas e detalhes.',
+    tamanhos: TAMANHOS_ROUPA
+  },
+  {
+    id: 'roupas-grife',
+    nome: 'Roupas de Grife',
+    categoria: 'kits',
+    categoriaLabel: 'Kit',
+    grupo: 'kits',
+    preco: null,
+    variantes: variantesFotos(15, null, 'Peça'),
+    imagens: imgs('roupas-grife', 15),
+    legendas: Array.from({ length: 15 }, (_, i) => `Peça ${i + 1}`),
+    galeriaCompacta: true,
+    descricao: 'Peças de grife importadas — escolha o modelo e solicite orçamento no WhatsApp.',
+    tamanhos: null
+  },
+  {
+    id: 'bermuda-jeans-balao',
+    nome: 'Bermuda Jeans Balão',
+    categoria: 'bermudas',
+    categoriaLabel: 'Bermudas',
+    grupo: 'bermudas',
+    preco: 'R$ 99,99',
+    imagens: imgs('bermuda-jeans-balao', 1),
+    descricao: 'Bermuda jeans balão importada. Consulte numeração disponível.',
+    tamanhos: ['38', '40', '42', '44']
+  },
+  {
+    id: 'bermuda-jogador',
+    nome: 'Bermuda Jogador',
+    categoria: 'bermudas',
+    categoriaLabel: 'Bermudas',
+    grupo: 'bermudas',
+    preco: 'R$ 149,99',
+    imagens: imgs('bermuda-jogador', 1),
+    descricao: 'Bermuda jogador premium. Várias numerações — chame no WhatsApp.',
+    tamanhos: ['38', '40', '42', '44']
   }
 ];
 
@@ -559,6 +718,9 @@ function canSubmitOrder(produto, tamanho, variante) {
 }
 
 function getWhatsappBtnText(produto) {
+  if (produto.grupo === 'kits' && produto.variantes?.length && !modalState.selectedVariant) {
+    return 'Escolha a peça ou kit';
+  }
   if (produto.variantes?.length && !modalState.selectedVariant) return 'Escolha o modelo';
   if (produto.tamanhos?.length) return 'Escolha o tamanho';
   return 'Solicitar Orçamento';
@@ -601,7 +763,7 @@ async function enviarFotoCliente(produto, photoIndex = modalState.photoIndex) {
   if (item?.tipo === 'video') {
     const videoUrl = getAbsoluteUrl(item.src);
     const msg = `${titulo}\nVídeo: ${videoUrl}`;
-    window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank', 'noopener,noreferrer');
+    openWhatsApp(`https://wa.me/?text=${encodeURIComponent(msg)}`);
     return;
   }
 
@@ -623,7 +785,7 @@ async function enviarFotoCliente(produto, photoIndex = modalState.photoIndex) {
   }
 
   const msg = `${titulo}\n${fotoUrl}`;
-  window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank', 'noopener,noreferrer');
+  openWhatsApp(`https://wa.me/?text=${encodeURIComponent(msg)}`);
 }
 
 function getProduto(id) {
@@ -680,7 +842,7 @@ function buildMensagem(produto, tamanho, variante, fotoUrl) {
 function solicitarOrcamento(produto, tamanho, variante, fotoUrl) {
   const mensagem = buildMensagem(produto, tamanho, variante, fotoUrl);
   const url = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(mensagem)}`;
-  window.open(url, '_blank', 'noopener,noreferrer');
+  openWhatsApp(url);
 }
 
 function renderSizeOptions(produtoId, tamanhos, selected = '', prefix = '') {
@@ -697,17 +859,29 @@ function renderSizeOptions(produtoId, tamanhos, selected = '', prefix = '') {
   `).join('');
 }
 
+function getPrecoResumo(produto) {
+  if (produto.preco) return produto.preco;
+  const precos = [...new Set(produto.variantes?.map(v => v.preco).filter(Boolean) || [])];
+  if (!precos.length) return null;
+  if (precos.length === 1) return precos[0];
+  const valores = precos
+    .map(p => parseFloat(String(p).replace(/[^\d,]/g, '').replace(',', '.')))
+    .filter(n => !isNaN(n))
+    .sort((a, b) => a - b);
+  if (!valores.length) return precos[0];
+  return `A partir de R$ ${valores[0].toFixed(2).replace('.', ',')}`;
+}
+
 function renderPrecoHTML(produto) {
   if (produto.variantes?.length) {
+    const resumo = getPrecoResumo(produto);
+    const precoClass = resumo ? 'product-card__price' : 'product-card__price product-card__price--quote';
+
     return `
-      <ul class="product-card__variantes">
-        ${produto.variantes.map(v => `
-          <li>
-            <span class="product-card__variante-nome">${v.nome}</span>
-            <span class="product-card__variante-preco${v.preco ? '' : ' product-card__variante-preco--quote'}">${v.preco || 'Solicitar orçamento'}</span>
-          </li>
-        `).join('')}
-      </ul>
+      <div class="${precoClass}">${resumo || 'Solicitar orçamento'}</div>
+      ${produto.promo ? `<div class="product-card__promo">${produto.promo}</div>` : ''}
+      ${produto.parcelamento ? `<div class="product-card__parcela">${produto.parcelamento}</div>` : ''}
+      ${!resumo ? '<p class="product-card__quote-hint">Chame no WhatsApp e faça seu orçamento personalizado.</p>' : ''}
     `;
   }
 
@@ -721,14 +895,17 @@ function renderPrecoHTML(produto) {
   `;
 }
 
+function getVariantLabel(produto, context = 'card') {
+  if (produto.id === 'kit-feminino-brasil') return 'Itens do kit';
+  if (produto.grupo === 'kits') return 'Escolha a peça ou kit';
+  if (produto.variantes?.length > 1 && produto.imagens?.length > 1) return 'Escolha o modelo';
+  return context === 'modal' ? 'Escolha o modelo' : 'Modelo';
+}
+
 function renderVariantPickHTML(produto, context = 'card') {
   if (!produto.variantes?.length) return '';
 
-  const label = produto.id === 'kit-feminino-brasil'
-    ? 'Itens do kit'
-    : (produto.variantes?.length > 1 && produto.imagens?.length > 1
-      ? 'Escolha o modelo'
-      : (context === 'modal' ? 'Escolha o modelo' : 'Modelo'));
+  const label = getVariantLabel(produto, context);
   const groupClass = context === 'modal' ? 'variant-options variant-options--modal' : 'variant-options';
 
   return `
@@ -762,7 +939,11 @@ function updateOrderButtonState(container, produto) {
   btn.disabled = !ready;
   btn.querySelector('.btn-text').textContent = ready
     ? 'Solicitar Orçamento'
-    : (produto.variantes?.length && !variante ? 'Escolha o modelo' : 'Escolha o tamanho');
+    : (produto.grupo === 'kits' && produto.variantes?.length && !variante
+      ? 'Escolha a peça ou kit'
+      : produto.variantes?.length && !variante
+        ? 'Escolha o modelo'
+        : 'Escolha o tamanho');
 }
 
 function renderSizesHTML(produto) {
@@ -789,14 +970,22 @@ function getLegenda(produto, index) {
   return produto.legendas?.[index] || null;
 }
 
+function getCapaImagem(produto) {
+  const imagens = getImagens(produto);
+  if (produto.imagemCapa) return produto.imagemCapa;
+  const index = produto.imagemCapaIndex ?? 0;
+  return imagens[index] || imagens[0];
+}
+
 function renderPreviewHTML(produto) {
   const imagens = getImagens(produto);
+  const capa = getCapaImagem(produto);
   const count = getMidiaCount(produto);
   const badgeText = count > 8 ? 'Galeria completa' : `${count} mídias`;
 
   return `
     <button type="button" class="product-card__preview" data-open-product="${produto.id}" aria-label="Ver fotos de ${produto.nome}">
-      <img src="${imagens[0]}" alt="${produto.nome}" loading="lazy">
+      <img src="${capa}" alt="${produto.nome}" loading="lazy">
       <span class="product-card__tag">${produto.categoriaLabel}</span>
       ${produto.video ? '<span class="product-card__video-badge">Vídeo</span>' : ''}
       ${count > 1 ? `<span class="product-card__photos-badge">${badgeText}</span>` : ''}
@@ -811,7 +1000,11 @@ function renderPreviewHTML(produto) {
 function buildProductCardHTML(produto) {
   const needsSize = Boolean(produto.tamanhos?.length);
   const needsVariant = Boolean(produto.variantes?.length);
-  const btnText = needsVariant ? 'Escolha o modelo' : (needsSize ? 'Escolha o tamanho' : 'Solicitar Orçamento');
+  const btnText = produto.grupo === 'kits' && needsVariant
+    ? 'Escolha a peça ou kit'
+    : needsVariant
+      ? 'Escolha o modelo'
+      : (needsSize ? 'Escolha o tamanho' : 'Solicitar Orçamento');
   const disabled = needsSize || needsVariant;
 
   const cardExtras = [
@@ -914,7 +1107,7 @@ function updatePhotoShareButton(produto, photoIndex) {
 
 function renderModalPriceHTML(produto) {
   if (produto.variantes?.length) {
-    const variantTitle = produto.id === 'kit-feminino-brasil' ? 'Itens do kit' : 'Escolha o modelo';
+    const variantTitle = getVariantLabel(produto, 'modal');
     return `
       <h3 class="product-modal__section-title">${variantTitle}</h3>
       <ul class="product-modal__variant-grid">
@@ -975,7 +1168,6 @@ function updateModalPhoto(produto, index) {
   const stageEl = document.getElementById('productModalStage');
   const counterEl = document.getElementById('productModalCounter');
   const captionEl = document.getElementById('productModalCaption');
-  const thumbsEl = document.getElementById('productModalThumbs');
   const dotsEl = document.getElementById('productModalDots');
   const item = midias[safeIndex];
 
@@ -1010,10 +1202,6 @@ function updateModalPhoto(produto, index) {
     captionEl.hidden = !captionText;
   }
 
-  thumbsEl?.querySelectorAll('.product-modal__filmstrip-item').forEach((thumb, i) => {
-    thumb.classList.toggle('active', i === safeIndex);
-  });
-
   dotsEl?.querySelectorAll('.product-modal__dot').forEach((dot, i) => {
     dot.classList.toggle('active', i === safeIndex);
     dot.setAttribute('aria-selected', i === safeIndex ? 'true' : 'false');
@@ -1024,8 +1212,7 @@ function updateModalPhoto(produto, index) {
   const multi = midias.length > 1;
   if (prevBtn) prevBtn.style.visibility = multi ? 'visible' : 'hidden';
   if (nextBtn) nextBtn.style.visibility = multi ? 'visible' : 'hidden';
-  if (dotsEl) dotsEl.hidden = !multi;
-  if (thumbsEl) thumbsEl.hidden = !multi;
+  if (dotsEl) dotsEl.hidden = !multi || midias.length > 12;
 
   syncUrlToModal(produto, safeIndex);
   updatePhotoShareButton(produto, safeIndex);
@@ -1041,7 +1228,11 @@ function openProductModal(produtoId) {
   const midias = getMidias(produto);
   const needsSize = Boolean(produto.tamanhos?.length);
   const needsVariant = Boolean(produto.variantes?.length);
-  const btnText = needsVariant ? 'Escolha o modelo' : (needsSize ? 'Escolha o tamanho' : 'Solicitar Orçamento');
+  const btnText = produto.grupo === 'kits' && needsVariant
+    ? 'Escolha a peça ou kit'
+    : needsVariant
+      ? 'Escolha o modelo'
+      : (needsSize ? 'Escolha o tamanho' : 'Solicitar Orçamento');
 
   document.getElementById('productModalCategory').textContent = produto.categoriaLabel;
   document.getElementById('productModalTitle').textContent = produto.nome;
@@ -1055,27 +1246,6 @@ function openProductModal(produtoId) {
   const whatsappBtn = document.getElementById('productModalWhatsapp');
   whatsappBtn.disabled = needsSize || needsVariant;
   whatsappBtn.querySelector('.btn-text').textContent = btnText;
-
-  const imagens = getImagens(produto);
-  const thumbsEl = document.getElementById('productModalThumbs');
-  const compactGallery = produto.galeriaCompacta || midias.length > 8;
-  thumbsEl.className = `product-modal__filmstrip${compactGallery ? ' product-modal__filmstrip--compact' : ''}`;
-  thumbsEl.innerHTML = midias.map((item, i) => {
-    if (item.tipo === 'video') {
-      return `
-        <button type="button" class="product-modal__filmstrip-item product-modal__filmstrip-item--video${i === 0 ? ' active' : ''}" data-photo-index="${i}" aria-label="Vídeo do produto">
-          <span>▶</span>
-        </button>
-      `;
-    }
-    const imgIndex = imagens.indexOf(item.src);
-    const legenda = getLegenda(produto, imgIndex);
-    return `
-      <button type="button" class="product-modal__filmstrip-item${i === 0 ? ' active' : ''}" data-photo-index="${i}" aria-label="${legenda || `Foto ${imgIndex + 1}`}">
-        <img src="${item.src}" alt="" loading="lazy">
-      </button>
-    `;
-  }).join('');
 
   const dotsEl = document.getElementById('productModalDots');
   dotsEl.innerHTML = midias.map((_, i) => `

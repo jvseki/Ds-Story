@@ -740,12 +740,14 @@ button {
   flex: 1;
   min-height: 0;
   overflow-y: auto;
+  overflow-x: hidden;
 }
 
 .product-modal__gallery {
   position: relative;
   background: #0a0a0a;
-  padding: 12px 8px;
+  padding: 12px 8px 16px;
+  min-width: 0;
 }
 
 .product-modal__stage {
@@ -791,16 +793,6 @@ button {
 
 .product-modal__stage.has-video .product-modal__image[hidden] {
   display: none !important;
-}
-
-.product-modal__filmstrip-item--video {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: rgba(0, 151, 57, 0.25);
-  color: #fff;
-  font-size: 1.2rem;
-  min-height: 64px;
 }
 
 .product-modal__counter {
@@ -860,9 +852,11 @@ button {
 .product-modal__dots {
   display: flex;
   justify-content: center;
-  gap: 8px;
+  flex-wrap: wrap;
+  gap: 6px;
   margin-top: 14px;
   padding: 0 8px;
+  max-width: 100%;
 }
 
 .product-modal__dot {
@@ -880,61 +874,6 @@ button {
   width: 22px;
   border-radius: 50px;
   background: var(--color-yellow);
-}
-
-.product-modal__filmstrip {
-  display: flex;
-  justify-content: center;
-  gap: 8px;
-  margin-top: 12px;
-  padding: 2px 8px 4px;
-  overflow-x: auto;
-  scroll-snap-type: x mandatory;
-  -webkit-overflow-scrolling: touch;
-}
-
-.product-modal__filmstrip-item {
-  flex: 0 0 64px;
-  scroll-snap-align: start;
-  padding: 0;
-  border: 2px solid transparent;
-  border-radius: 10px;
-  overflow: hidden;
-  background: none;
-  cursor: pointer;
-  opacity: 0.55;
-  transition: var(--transition);
-}
-
-.product-modal__filmstrip-item.active,
-.product-modal__filmstrip-item:hover {
-  opacity: 1;
-  border-color: var(--color-yellow);
-}
-
-.product-modal__filmstrip-item img {
-  width: 64px;
-  height: 64px;
-  object-fit: contain;
-  object-position: center;
-  background: #111;
-  display: block;
-}
-
-.product-modal__filmstrip--compact {
-  justify-content: flex-start;
-  gap: 6px;
-  padding-bottom: 8px;
-  mask-image: linear-gradient(90deg, #000 92%, transparent);
-}
-
-.product-modal__filmstrip--compact .product-modal__filmstrip-item {
-  flex: 0 0 52px;
-}
-
-.product-modal__filmstrip--compact .product-modal__filmstrip-item img {
-  width: 52px;
-  height: 52px;
 }
 
 .catalog-group[data-group="camisetas"] {
@@ -984,7 +923,9 @@ button {
   display: flex;
   flex-direction: column;
   gap: 18px;
-  min-height: 0;
+  min-width: 0;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .product-modal__section {
@@ -1052,9 +993,26 @@ button {
 }
 
 .product-modal__variant-grid {
+  list-style: none;
+  margin: 0;
+  padding: 0;
   display: flex;
   flex-direction: column;
   gap: 8px;
+  max-height: 220px;
+  overflow-y: auto;
+  padding-right: 4px;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
+}
+
+.product-modal__variant-grid::-webkit-scrollbar {
+  width: 6px;
+}
+
+.product-modal__variant-grid::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 999px;
 }
 
 .product-modal__variant-item {
@@ -1111,9 +1069,27 @@ button {
   margin-bottom: 14px;
 }
 
+.product-card__variantes-pick .variant-options {
+  max-height: 132px;
+  overflow-y: auto;
+  padding-right: 4px;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.15) transparent;
+}
+
+.product-card__variantes-pick .variant-btn {
+  flex: 0 1 auto;
+  min-width: 0;
+  white-space: normal;
+  text-align: center;
+  line-height: 1.25;
+}
+
 .product-modal__variant-name {
   font-size: 0.9rem;
   font-weight: 600;
+  line-height: 1.35;
+  word-break: break-word;
 }
 
 .product-modal__variant-price {
@@ -1177,14 +1153,12 @@ button {
   border-radius: var(--radius);
   overflow: hidden;
   border: 1px solid var(--color-border);
-  transition: transform var(--transition), box-shadow var(--transition), opacity var(--transition);
+  transition: transform var(--transition), box-shadow var(--transition), opacity 0.45s ease;
   opacity: 0;
-  transform: translateY(24px);
 }
 
 .product-card.visible {
   opacity: 1;
-  transform: translateY(0);
 }
 
 .product-card:hover {
@@ -1623,7 +1597,9 @@ button {
     border-radius: var(--radius);
     max-height: 90vh;
   }
+}
 
+@media (min-width: 960px) {
   .product-modal__layout {
     grid-template-columns: 1.05fr 0.95fr;
     overflow: hidden;
@@ -1652,7 +1628,8 @@ button {
   .product-modal__panel {
     overflow-y: auto;
     padding: 24px;
-    justify-content: space-between;
+    justify-content: flex-start;
+    min-width: 300px;
   }
 
   .product-card__view-hint {
