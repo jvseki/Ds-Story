@@ -747,9 +747,22 @@ function getProductShareUrl(produtoId, photoIndex = 0) {
   return url.toString();
 }
 
+function getBrowserProductUrl(produtoId, photoIndex = 0) {
+  const url = new URL(window.location.href);
+  url.searchParams.set('p', produtoId);
+  if (photoIndex > 0) url.searchParams.set('f', String(photoIndex));
+  else url.searchParams.delete('f');
+  url.hash = 'catalogo';
+  return `${url.pathname}${url.search}${url.hash}`;
+}
+
 function syncUrlToModal(produto, photoIndex = 0) {
   if (!produto) return;
-  history.replaceState(null, '', getProductShareUrl(produto.id, photoIndex));
+  try {
+    history.replaceState(null, '', getBrowserProductUrl(produto.id, photoIndex));
+  } catch (_) {
+    /* URL sync opcional — não bloqueia abrir o modal */
+  }
 }
 
 function clearProductShareUrl() {
@@ -1039,7 +1052,10 @@ function buildProductCardHTML(produto) {
 
 function bindProductCardEvents(container) {
   container.querySelectorAll('[data-open-product]').forEach(btn => {
-    btn.addEventListener('click', () => openProductModal(btn.dataset.openProduct));
+    btn.addEventListener('click', (e) => {
+      e.preventDefault();
+      openProductModal(btn.dataset.openProduct);
+    });
   });
 
   container.querySelectorAll('.variant-btn').forEach(btn => {
@@ -1166,6 +1182,8 @@ function renderModalSizesHTML(produto) {
 
 function updateModalPhoto(produto, index) {
   const midias = getMidias(produto);
+  if (!midias.length) return;
+
   const imagens = getImagens(produto);
   const safeIndex = ((index % midias.length) + midias.length) % midias.length;
   modalState.photoIndex = safeIndex;
@@ -1177,21 +1195,28 @@ function updateModalPhoto(produto, index) {
   const captionEl = document.getElementById('productModalCaption');
   const dotsEl = document.getElementById('productModalDots');
   const item = midias[safeIndex];
+  if (!item) return;
 
   stageEl?.classList.toggle('has-video', item.tipo === 'video');
 
   if (item.tipo === 'video') {
-    imgEl.hidden = true;
-    imgEl.removeAttribute('src');
-    videoEl.hidden = false;
-    videoEl.src = item.src;
-    videoEl.poster = item.poster || imagens[0] || '';
-    videoEl.load();
-  } else {
-    videoEl.hidden = true;
-    videoEl.pause();
-    videoEl.removeAttribute('src');
-    videoEl.load();
+    if (imgEl) {
+      imgEl.hidden = true;
+      imgEl.removeAttribute('src');
+    }
+    if (videoEl) {
+      videoEl.hidden = false;
+      videoEl.src = item.src;
+      videoEl.poster = item.poster || imagens[0] || '';
+      videoEl.load();
+    }
+  } else if (imgEl) {
+    if (videoEl) {
+      videoEl.hidden = true;
+      videoEl.pause();
+      videoEl.removeAttribute('src');
+      videoEl.load();
+    }
     imgEl.hidden = false;
     imgEl.src = item.src;
     const imgIndex = imagens.indexOf(item.src);
@@ -1199,7 +1224,7 @@ function updateModalPhoto(produto, index) {
     imgEl.alt = legenda ? `${produto.nome} — ${legenda}` : `${produto.nome} — foto ${imgIndex + 1}`;
   }
 
-  counterEl.textContent = `${safeIndex + 1} / ${midias.length}`;
+  if (counterEl) counterEl.textContent = `${safeIndex + 1} / ${midias.length}`;
 
   if (captionEl) {
     const captionText = item.legenda || (item.tipo === 'imagem'
@@ -1259,11 +1284,11 @@ function openProductModal(produtoId) {
     <button type="button" class="product-modal__dot${i === 0 ? ' active' : ''}" data-photo-index="${i}" aria-label="Ir para mídia ${i + 1}" aria-selected="${i === 0 ? 'true' : 'false'}"></button>
   `).join('');
 
-  updateModalPhoto(produto, 0);
-
   modal.classList.add('open');
   modal.setAttribute('aria-hidden', 'false');
   document.body.style.overflow = 'hidden';
+
+  updateModalPhoto(produto, 0);
 
   bindModalEvents(produto);
   bindPhotoShareButton(produto);
@@ -1305,13 +1330,13 @@ function bindModalEvents(produto) {
     el.onclick = closeProductModal;
   });
 
-  modal.querySelector('.product-modal__nav--prev').onclick = () => {
+  modal.querySelector('.product-modal__nav--prev')?.addEventListener('click', () => {
     updateModalPhoto(produto, modalState.photoIndex - 1);
-  };
+  });
 
-  modal.querySelector('.product-modal__nav--next').onclick = () => {
+  modal.querySelector('.product-modal__nav--next')?.addEventListener('click', () => {
     updateModalPhoto(produto, modalState.photoIndex + 1);
-  };
+  });
 
   modal.querySelectorAll('[data-photo-index]').forEach(el => {
     el.onclick = () => updateModalPhoto(produto, Number(el.dataset.photoIndex));

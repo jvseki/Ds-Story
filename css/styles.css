@@ -510,6 +510,14 @@ button {
   touch-action: manipulation;
 }
 
+.product-card__preview img,
+.product-card__preview .product-card__tag,
+.product-card__preview .product-card__photos-badge,
+.product-card__preview .product-card__video-badge,
+.product-card__preview .product-card__view-hint {
+  pointer-events: none;
+}
+
 .product-card__preview img {
   width: 100%;
   height: 100%;
