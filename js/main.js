@@ -1,6 +1,9 @@
 /* DS A Fonte — Main Script */
 
 const WHATSAPP_NUMBER = '5518996563430';
+const SITE_ORIGIN = (
+  document.querySelector('meta[name="site-origin"]')?.content || 'https://ds-story-coral.vercel.app'
+).replace(/\/$/, '');
 const TAMANHOS_ROUPA = ['P', 'M', 'G', 'GG'];
 const TAMANHOS_INFANTIL = ['2', '4', '6', '8', '10', '12', '14'];
 const TAMANHOS_TENIS = ['38', '39', '40', '41', '42', '43', '44'];
@@ -685,10 +688,15 @@ let modalState = {
   selectedVariant: null
 };
 
-function getAbsoluteUrl(path) {
+function getPublicUrl(path) {
   if (!path) return '';
   if (path.startsWith('http')) return path;
-  return new URL(path, window.location.href).href;
+  const clean = path.replace(/^\//, '');
+  return `${SITE_ORIGIN}/${clean}`;
+}
+
+function getAbsoluteUrl(path) {
+  return getPublicUrl(path);
 }
 
 function getVariante(produto, index) {
@@ -732,11 +740,10 @@ function matchesFilter(produto, filter) {
 }
 
 function getProductShareUrl(produtoId, photoIndex = 0) {
-  const url = new URL(window.location.href);
+  const url = new URL(SITE_ORIGIN);
   url.searchParams.set('p', produtoId);
   if (photoIndex > 0) url.searchParams.set('f', String(photoIndex));
-  else url.searchParams.delete('f');
-  if (!url.hash.includes('catalogo')) url.hash = 'catalogo';
+  url.hash = 'catalogo';
   return url.toString();
 }
 
