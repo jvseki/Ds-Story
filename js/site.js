@@ -64,9 +64,19 @@ function initMobileMenu() {
 
   document.getElementById('menuClose')?.addEventListener('click', closeMenu);
   overlay.addEventListener('click', closeMenu);
-  nav.querySelectorAll('.nav-link, .nav-categories__link, .nav-drawer__brand').forEach(link => {
-    link.addEventListener('click', closeMenu);
-  });
+}
+
+function groupDrawerNavLinks() {
+  const scroll = document.querySelector('#mainNav .nav-drawer__scroll');
+  if (!scroll || scroll.querySelector('.nav-drawer__menu')) return;
+
+  const links = [...scroll.querySelectorAll('.nav-link:not(.nav-link--cta)')];
+  if (!links.length) return;
+
+  const menu = document.createElement('div');
+  menu.className = 'nav-drawer__menu';
+  links.forEach(link => menu.appendChild(link));
+  scroll.insertBefore(menu, scroll.firstChild);
 }
 
 function initHeaderScroll() {
@@ -185,6 +195,7 @@ document.addEventListener('DOMContentLoaded', () => {
   redirectProductDeepLink();
   initHeaderSearchFromUrl();
   initMobileNavLayout();
+  groupDrawerNavLinks();
   initMobileCategories();
   initMobileMenu();
   initHeaderScroll();
