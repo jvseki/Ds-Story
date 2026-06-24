@@ -178,6 +178,18 @@ function buildMobileCategories() {
   `;
 }
 
+function initDrawerFooter() {
+  const nav = document.getElementById('mainNav');
+  const scroll = nav?.querySelector('.nav-drawer__scroll');
+  const whatsapp = scroll?.querySelector('.nav-link--cta');
+  if (!nav || !scroll || !whatsapp || nav.querySelector('.nav-drawer__footer')) return;
+
+  const footer = document.createElement('div');
+  footer.className = 'nav-drawer__footer';
+  footer.appendChild(whatsapp);
+  nav.appendChild(footer);
+}
+
 function initMobileCategories() {
   const scroll = document.querySelector('#mainNav .nav-drawer__scroll');
   const mainNav = scroll || document.getElementById('mainNav');
@@ -197,6 +209,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initMobileNavLayout();
   groupDrawerNavLinks();
   initMobileCategories();
+  initDrawerFooter();
   initMobileMenu();
   initHeaderScroll();
   initActiveNav();

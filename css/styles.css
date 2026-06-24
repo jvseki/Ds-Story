@@ -401,17 +401,31 @@ button {
   color: var(--color-yellow);
 }
 
-.nav-drawer__scroll .nav-link--cta {
-  margin-top: 12px;
-  padding: 13px 18px;
+.nav-drawer__footer {
+  flex-shrink: 0;
+  padding: 18px 16px calc(20px + env(safe-area-inset-bottom, 0px));
+  border-top: 1px solid var(--color-border);
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.nav-drawer__footer .nav-link--cta {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  margin-top: 0;
+  padding: 14px 18px;
   font-weight: 600;
   font-size: 0.95rem;
   letter-spacing: 0.01em;
   background: var(--color-green);
   border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: var(--radius-sm);
+  text-align: center;
 }
 
-.nav-drawer__scroll .nav-link--cta:hover {
+.nav-drawer__footer .nav-link--cta:hover {
   background: var(--color-green-dark);
   color: #fff;
 }
@@ -460,8 +474,8 @@ button {
 
 /* ---- Mobile category shortcuts ---- */
 .nav-categories {
-  margin: 14px 0 8px;
-  padding: 16px 0 0;
+  margin: 16px 0 0;
+  padding: 18px 0 4px;
   border-top: 1px solid var(--color-border);
 }
 
@@ -512,6 +526,10 @@ button {
   }
 
   .nav-drawer__menu {
+    display: contents;
+  }
+
+  .nav-drawer__footer {
     display: contents;
   }
 
