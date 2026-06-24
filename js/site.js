@@ -1,6 +1,37 @@
 /* DS A Fonte — Layout e navegação compartilhada */
 
+function initMobileNavLayout() {
+  const nav = document.getElementById('mainNav');
+  if (!nav || nav.querySelector('.nav-drawer__head')) return;
+
+  const head = document.createElement('div');
+  head.className = 'nav-drawer__head';
+  head.innerHTML = `
+    <a href="index.html" class="nav-drawer__brand">
+      <img src="images/logo.png" alt="" width="48" height="48">
+      <span class="nav-drawer__brand-text">
+        <strong>DS A Fonte</strong>
+        <small>Importados Originais</small>
+      </span>
+    </a>
+    <button type="button" class="nav-drawer__close" id="menuClose" aria-label="Fechar menu">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M18 6L6 18M6 6l12 12"/></svg>
+    </button>
+  `;
+
+  const scroll = document.createElement('div');
+  scroll.className = 'nav-drawer__scroll';
+  while (nav.firstChild) {
+    scroll.appendChild(nav.firstChild);
+  }
+
+  nav.appendChild(head);
+  nav.appendChild(scroll);
+}
+
 function initMobileMenu() {
+  initMobileNavLayout();
+
   const toggle = document.getElementById('menuToggle');
   const nav = document.getElementById('mainNav');
   if (!toggle || !nav) return;
@@ -31,8 +62,11 @@ function initMobileMenu() {
     nav.classList.contains('open') ? closeMenu() : openMenu();
   });
 
+  document.getElementById('menuClose')?.addEventListener('click', closeMenu);
   overlay.addEventListener('click', closeMenu);
-  nav.querySelectorAll('.nav-link, .nav-categories__link').forEach(link => link.addEventListener('click', closeMenu));
+  nav.querySelectorAll('.nav-link, .nav-categories__link, .nav-drawer__brand').forEach(link => {
+    link.addEventListener('click', closeMenu);
+  });
 }
 
 function initHeaderScroll() {
@@ -135,7 +169,8 @@ function buildMobileCategories() {
 }
 
 function initMobileCategories() {
-  const mainNav = document.getElementById('mainNav');
+  const scroll = document.querySelector('#mainNav .nav-drawer__scroll');
+  const mainNav = scroll || document.getElementById('mainNav');
   if (!mainNav || mainNav.querySelector('.nav-categories')) return;
 
   const whatsapp = mainNav.querySelector('.nav-link--cta');
@@ -149,6 +184,7 @@ function initMobileCategories() {
 document.addEventListener('DOMContentLoaded', () => {
   redirectProductDeepLink();
   initHeaderSearchFromUrl();
+  initMobileNavLayout();
   initMobileCategories();
   initMobileMenu();
   initHeaderScroll();
