@@ -15,6 +15,7 @@ function initMobileMenu() {
     overlay.classList.remove('open');
     toggle.setAttribute('aria-expanded', 'false');
     document.body.style.overflow = '';
+    document.getElementById('header')?.classList.remove('menu-open');
   }
 
   function openMenu() {
@@ -23,6 +24,7 @@ function initMobileMenu() {
     overlay.classList.add('open');
     toggle.setAttribute('aria-expanded', 'true');
     document.body.style.overflow = 'hidden';
+    document.getElementById('header')?.classList.add('menu-open');
   }
 
   toggle.addEventListener('click', () => {
