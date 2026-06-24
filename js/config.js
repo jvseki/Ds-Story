@@ -61,6 +61,19 @@ const GRUPOS = [
   }
 ];
 
+const NAV_LABELS = {
+  copa: 'Copa',
+  oculos: 'Óculos',
+  camisetas: 'Camisetas',
+  bermudas: 'Bermudas',
+  kits: 'Kits',
+  jaquetas: 'Jaquetas',
+  moletom: 'Moletom',
+  polos: 'Polos',
+  tenis: 'Tênis',
+  acessorios: 'Bonés'
+};
+
 function imgs(id, count) {
   return Array.from({ length: count }, (_, i) =>
     `images/produtos/${id}/${String(i + 1).padStart(2, '0')}.jpeg`
