@@ -9,13 +9,27 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/styles.css?v=20260623j">
+  <link rel="stylesheet" href="css/styles.css?v=20260623k">
   <link rel="icon" type="image/png" href="images/logo.png">
 </head>
 <body data-page="catalogo">
 
+  <div class="promo-bar">
+    <div class="container promo-bar__inner">
+      <p>5% no PIX · ou parcele em até 5x sem juros nos importados</p>
+    </div>
+  </div>
+
   <header class="header" id="header">
     <div class="container header__inner">
+      <form class="header__search" action="catalogo.html" method="get" role="search">
+        <label class="visually-hidden" for="headerSearch">Buscar produtos</label>
+        <input type="search" id="headerSearch" class="header__search-input" name="q" placeholder="Buscar" autocomplete="off">
+        <button type="submit" class="header__search-btn" aria-label="Buscar">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
+        </button>
+      </form>
+
       <a href="index.html" class="header__logo">
         <img src="images/logo.png" alt="DS A Fonte" width="52" height="52">
         <span class="header__brand">
@@ -40,20 +54,24 @@
     </div>
   </header>
 
-  <section class="page-hero">
+  <section class="catalog page-section" id="catalogo">
     <div class="container">
-      <span class="section-tag">Catálogo</span>
-      <h1 class="section-title">Nossos Produtos</h1>
-      <p class="page-hero__desc">Seleção, óculos, camisetas, bermudas, kits, polos, moletom, bonés e tênis. Com preço ou solicite orçamento pelo WhatsApp.</p>
-      <div class="page-hero__actions">
-        <a href="catalogo.html?cat=copa" class="btn btn--primary">Copa &amp; Seleção</a>
-        <a href="https://wa.me/5518996563430?text=Ol%C3%A1!%20Vim%20pelo%20cat%C3%A1logo%20da%20DS%20A%20Fonte." class="btn btn--outline" target="_blank" rel="noopener noreferrer">WhatsApp</a>
+      <div class="section-header">
+        <span class="section-tag">Catálogo</span>
+        <h1 class="section-title">Nossos Produtos</h1>
+        <p class="section-desc">Busque, filtre por categoria e solicite orçamento pelo WhatsApp.</p>
       </div>
-    </div>
-  </section>
 
-  <section class="catalog" id="catalogo">
-    <div class="container">
+      <div class="catalog-search">
+        <form id="catalogSearchForm" class="catalog-search__form" role="search">
+          <label class="visually-hidden" for="catalogSearch">Buscar no catálogo</label>
+          <input type="search" id="catalogSearch" class="catalog-search__input" placeholder="Buscar por nome, categoria ou descrição..." autocomplete="off">
+          <button type="submit" class="catalog-search__btn" aria-label="Buscar">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
+          </button>
+        </form>
+        <p class="catalog-search__meta" id="catalogSearchMeta" hidden></p>
+      </div>
       <div class="filters" id="filters">
         <button class="filter-btn active" data-filter="todos">Todos</button>
         <button class="filter-btn filter-btn--copa" data-filter="copa">Copa</button>
@@ -154,9 +172,9 @@
     </div>
   </div>
 
-  <script src="js/config.js?v=20260623j"></script>
-  <script src="js/catalog-data.js?v=20260623j"></script>
-  <script src="js/main.js?v=20260623j"></script>
-  <script src="js/site.js?v=20260623j"></script>
+  <script src="js/config.js?v=20260623k"></script>
+  <script src="js/catalog-data.js?v=20260623k"></script>
+  <script src="js/main.js?v=20260623k"></script>
+  <script src="js/site.js?v=20260623k"></script>
 </body>
 </html>

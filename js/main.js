@@ -1,5 +1,8 @@
 /* DS A Fonte — Catálogo e modal */
 
+let activeCategoryFilter = 'todos';
+let activeSearchQuery = '';
+
 let modalState = {
   produtoId: null,
   photoIndex: 0,
@@ -55,7 +58,61 @@ function getWhatsappBtnText(produto) {
 
 function matchesFilter(produto, filter) {
   if (filter === 'todos') return true;
-  return produto.categoria === filter;
+  return produto.categoria === filter || produto.grupo === filter;
+}
+
+function normalizeSearch(text) {
+  return String(text || '')
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+    .trim();
+}
+
+function matchesSearch(produto, query) {
+  if (!query) return true;
+  const q = normalizeSearch(query);
+  const parts = [
+    produto.nome,
+    produto.descricao,
+    produto.categoriaLabel,
+    produto.grupo,
+    produto.categoria,
+    ...(produto.variantes?.map(v => v.nome) || [])
+  ];
+  return normalizeSearch(parts.join(' ')).includes(q);
+}
+
+function getFilteredProducts(categoryFilter, searchQuery) {
+  return produtos.filter(p => matchesFilter(p, categoryFilter) && matchesSearch(p, searchQuery));
+}
+
+function escapeHtml(text) {
+  return String(text)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/"/g, '&quot;');
+}
+
+function syncHeaderSearchInputs(value) {
+  document.querySelectorAll('.header__search-input').forEach(el => {
+    el.value = value;
+  });
+}
+
+function updateSearchMeta(count, query) {
+  const meta = document.getElementById('catalogSearchMeta');
+  if (!meta) return;
+
+  if (!query.trim()) {
+    meta.hidden = true;
+    meta.textContent = '';
+    return;
+  }
+
+  meta.hidden = false;
+  const label = count === 1 ? 'produto encontrado' : 'produtos encontrados';
+  meta.innerHTML = `<strong>${count}</strong> ${label} para "${escapeHtml(query)}"`;
 }
 
 function getProductShareUrl(produtoId, photoIndex = 0) {
@@ -867,13 +924,26 @@ function renderGroupedCatalog(items) {
     .join('');
 }
 
-function renderCatalog(filter = 'todos') {
+function renderCatalog(categoryFilter = activeCategoryFilter, searchQuery = activeSearchQuery) {
   const grid = document.getElementById('catalogGrid');
   if (!grid) return;
 
-  const items = produtos.filter(p => matchesFilter(p, filter));
+  activeCategoryFilter = categoryFilter;
+  activeSearchQuery = searchQuery;
+  const items = getFilteredProducts(categoryFilter, searchQuery);
+  const useGrouped = categoryFilter === 'todos' && !searchQuery.trim();
 
-  if (filter === 'todos') {
+  if (!items.length) {
+    grid.className = 'catalog__grid';
+    const term = searchQuery.trim();
+    grid.innerHTML = term
+      ? `<p class="catalog-empty">Nenhum produto encontrado para "<strong>${escapeHtml(term)}</strong>". Tente outro termo ou limpe a busca.</p>`
+      : '<p class="catalog-empty">Nenhum produto nesta categoria no momento.</p>';
+    updateSearchMeta(0, searchQuery);
+    return;
+  }
+
+  if (useGrouped) {
     grid.className = 'catalog-groups';
     grid.innerHTML = renderGroupedCatalog(items);
   } else {
@@ -883,6 +953,7 @@ function renderCatalog(filter = 'todos') {
 
   bindProductCardEvents(grid);
   initCardAnimations();
+  updateSearchMeta(items.length, searchQuery);
 }
 
 function initFilters() {
@@ -890,10 +961,11 @@ function initFilters() {
   if (!filters) return;
 
   function applyFilter(filter) {
+    activeCategoryFilter = filter;
     filters.querySelectorAll('.filter-btn').forEach(b => {
       b.classList.toggle('active', b.dataset.filter === filter);
     });
-    renderCatalog(filter);
+    renderCatalog(filter, activeSearchQuery);
   }
 
   filters.addEventListener('click', (e) => {
@@ -909,8 +981,41 @@ function initFilters() {
     });
   });
 
-  const urlCat = new URLSearchParams(window.location.search).get('cat');
+  const params = new URLSearchParams(window.location.search);
+  const urlCat = params.get('cat');
   if (urlCat) applyFilter(urlCat);
+  else applyFilter(activeCategoryFilter);
+}
+
+function initSearch() {
+  const form = document.getElementById('catalogSearchForm');
+  const input = document.getElementById('catalogSearch');
+  if (!form || !input) return;
+
+  activeSearchQuery = new URLSearchParams(window.location.search).get('q') || '';
+  input.value = activeSearchQuery;
+  syncHeaderSearchInputs(activeSearchQuery);
+
+  function runSearch(query) {
+    activeSearchQuery = query.trim();
+    const url = new URL(window.location.href);
+    if (activeSearchQuery) url.searchParams.set('q', activeSearchQuery);
+    else url.searchParams.delete('q');
+    history.replaceState(null, '', `${url.pathname}${url.search}${url.hash}`);
+    syncHeaderSearchInputs(activeSearchQuery);
+    renderCatalog(activeCategoryFilter, activeSearchQuery);
+  }
+
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    runSearch(input.value);
+  });
+
+  let debounceTimer;
+  input.addEventListener('input', () => {
+    clearTimeout(debounceTimer);
+    debounceTimer = setTimeout(() => runSearch(input.value), 280);
+  });
 }
 
 function initCardAnimations() {
@@ -933,8 +1038,12 @@ function initCardAnimations() {
 }
 
 function initCatalogPage() {
-  renderCatalog();
+  const params = new URLSearchParams(window.location.search);
+  activeSearchQuery = params.get('q') || '';
+  activeCategoryFilter = params.get('cat') || 'todos';
+
   initFilters();
+  initSearch();
   initProductModal();
   initModalSwipe();
   initDeepLink();

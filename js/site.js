@@ -61,9 +61,67 @@ function redirectProductDeepLink() {
   window.location.replace('catalogo.html' + window.location.search);
 }
 
+function initPromoSlider() {
+  const track = document.getElementById('promoSliderTrack');
+  const dotsEl = document.getElementById('promoSliderDots');
+  if (!track || !dotsEl) return;
+
+  const slides = [...track.children];
+  if (!slides.length) return;
+
+  let index = 0;
+  let timer;
+
+  dotsEl.innerHTML = slides.map((slide, i) => {
+    const onDark = slide.classList.contains('promo-slide--dark') || slide.classList.contains('promo-slide--copa');
+    return `<button type="button" class="promo-slider__dot${onDark ? ' promo-slider__dot--on-dark' : ''}${i === 0 ? ' active' : ''}" aria-label="Ir para slide ${i + 1}" data-slide="${i}"></button>`;
+  }).join('');
+
+  function goTo(nextIndex) {
+    index = ((nextIndex % slides.length) + slides.length) % slides.length;
+    track.style.transform = `translateX(-${index * 100}%)`;
+    dotsEl.querySelectorAll('.promo-slider__dot').forEach((dot, i) => {
+      dot.classList.toggle('active', i === index);
+    });
+  }
+
+  function resetTimer() {
+    clearInterval(timer);
+    timer = setInterval(() => goTo(index + 1), 6000);
+  }
+
+  document.querySelector('.promo-slider__nav--prev')?.addEventListener('click', () => {
+    goTo(index - 1);
+    resetTimer();
+  });
+
+  document.querySelector('.promo-slider__nav--next')?.addEventListener('click', () => {
+    goTo(index + 1);
+    resetTimer();
+  });
+
+  dotsEl.addEventListener('click', (e) => {
+    const dot = e.target.closest('[data-slide]');
+    if (!dot) return;
+    goTo(Number(dot.dataset.slide));
+    resetTimer();
+  });
+
+  resetTimer();
+}
+
+function initHeaderSearchFromUrl() {
+  const query = new URLSearchParams(window.location.search).get('q') || '';
+  document.querySelectorAll('.header__search-input').forEach(input => {
+    input.value = query;
+  });
+}
+
 document.addEventListener('DOMContentLoaded', () => {
   redirectProductDeepLink();
+  initHeaderSearchFromUrl();
   initMobileMenu();
   initHeaderScroll();
   initActiveNav();
+  initPromoSlider();
 });

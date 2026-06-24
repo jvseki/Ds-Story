@@ -9,13 +9,27 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/styles.css?v=20260623j">
+  <link rel="stylesheet" href="css/styles.css?v=20260623k">
   <link rel="icon" type="image/png" href="images/logo.png">
 </head>
 <body data-page="sobre">
 
+  <div class="promo-bar">
+    <div class="container promo-bar__inner">
+      <p>5% no PIX · ou parcele em até 5x sem juros nos importados</p>
+    </div>
+  </div>
+
   <header class="header" id="header">
     <div class="container header__inner">
+      <form class="header__search" action="catalogo.html" method="get" role="search">
+        <label class="visually-hidden" for="headerSearch">Buscar produtos</label>
+        <input type="search" id="headerSearch" class="header__search-input" name="q" placeholder="Buscar" autocomplete="off">
+        <button type="submit" class="header__search-btn" aria-label="Buscar">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
+        </button>
+      </form>
+
       <a href="index.html" class="header__logo">
         <img src="images/logo.png" alt="DS A Fonte" width="52" height="52">
         <span class="header__brand">
@@ -118,6 +132,6 @@
 
   <a href="https://github.com/jvseki" class="dev-watermark" target="_blank" rel="noopener noreferrer" aria-label="Desenvolvido por JVSEKI">JVSEKI</a>
 
-  <script src="js/site.js?v=20260623j"></script>
+  <script src="js/site.js?v=20260623k"></script>
 </body>
 </html>
