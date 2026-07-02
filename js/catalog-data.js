@@ -753,14 +753,14 @@ const produtos = [
   },
   {
     id: 'polo-guarana-garros',
-    nome: 'Polo Guaraná F1',
+    nome: 'Polos Diversas',
     categoria: 'polos',
     categoriaLabel: 'Polo',
     grupo: 'polos',
     preco: 'R$ 99,99',
     imagens: imgs('polo-guarana-garros', 18),
     galeriaCompacta: true,
-    descricao: 'Polos dry fit patrocínio Guaraná e equipes de F1. Vários modelos na galeria.',
+    descricao: 'Polos dry fit em vários modelos e estampas. Confira as opções na galeria.',
     tamanhos: TAMANHOS_ROUPA
   },
   {
