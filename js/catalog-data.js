@@ -96,7 +96,7 @@ const produtos = [
       { nome: 'Preta gola verde', preco: 'R$ 99,99', fotos: [0, 1] },
       { nome: 'Preta gola preta', preco: 'R$ 99,99', fotos: [10, 11, 12] },
       { nome: 'Ciano', preco: 'R$ 99,99', fotos: [3, 4] },
-      { nome: 'Azul', preco: 'R$ 99,99', fotos: [5, 6, 7, 8, 9, 13, 15] }
+      { nome: 'Azul', preco: 'R$ 99,99', fotos: [5, 6, 7, 8, 9] }
     ],
     imagens: imgs('polo-treino-brasil', 19),
     imagemCapaIndex: 14,
