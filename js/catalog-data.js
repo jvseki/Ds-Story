@@ -724,15 +724,14 @@ const produtos = [
     categoriaLabel: 'Polo',
     grupo: 'polos',
     preco: 'R$ 100,00',
-    variantesPorCor: true,
     variantes: [
-      { nome: 'Branca Caveira', preco: 'R$ 100,00', fotos: [0, 8] },
-      { nome: 'Branca Elite SF', preco: 'R$ 100,00', fotos: [9, 10] },
-      { nome: 'Preta Caveira', preco: 'R$ 100,00', fotos: [7, 12] },
-      { nome: 'Preta Elite SF', preco: 'R$ 100,00', fotos: [3, 4, 5, 11] },
-      { nome: 'Preta Pilot', preco: 'R$ 100,00', fotos: [2] },
+      { nome: 'Branca Caveira', preco: 'R$ 100,00', fotos: [0, 7, 12] },
+      { nome: 'Branca Elite SF', preco: 'R$ 100,00', fotos: [8, 9] },
       { nome: 'Preta Camuflado', preco: 'R$ 100,00', fotos: [1] },
-      { nome: 'Preta Escudo', preco: 'R$ 100,00', fotos: [6] }
+      { nome: 'Preta Pilot', preco: 'R$ 100,00', fotos: [2] },
+      { nome: 'Preta Elite SF', preco: 'R$ 100,00', fotos: [3, 4, 10] },
+      { nome: 'Preta Escudo', preco: 'R$ 100,00', fotos: [5] },
+      { nome: 'Preta Caveira', preco: 'R$ 100,00', fotos: [6, 11] }
     ],
     imagens: imgs('polo-oakley', 13),
     imagemCapaIndex: 0,
