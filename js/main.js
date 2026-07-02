@@ -46,6 +46,7 @@ function getModalPhotoIndices(produto) {
 function getModalMidias(produto) {
   const imagens = getImagens(produto);
   const indices = getModalPhotoIndices(produto);
+  const variante = modalState.selectedVariant;
   const items = indices.map(i => ({
     tipo: 'imagem',
     src: imagens[i],
@@ -53,7 +54,14 @@ function getModalMidias(produto) {
     globalIndex: i
   }));
 
-  if (produto.video && !produto.variantesPorCor) {
+  if (variante?.video) {
+    items.push({
+      tipo: 'video',
+      src: variante.video,
+      poster: imagens[indices[0]] ?? imagens[0],
+      legenda: 'Vídeo do produto'
+    });
+  } else if (produto.video && !produto.variantesPorCor) {
     items.push({
       tipo: 'video',
       src: produto.video,
@@ -243,6 +251,11 @@ function getProduto(id) {
 
 function getImagens(produto) {
   return produto.imagens?.length ? produto.imagens : [produto.imagem];
+}
+
+function produtoTemVideo(produto) {
+  if (produto.video) return true;
+  return Boolean(produto.variantes?.some(v => v.video));
 }
 
 function getMidias(produto) {
@@ -439,7 +452,7 @@ function renderPreviewHTML(produto) {
     <button type="button" class="product-card__preview" data-open-product="${produto.id}" aria-label="Ver fotos de ${produto.nome}">
       <img src="${capa}" alt="${produto.nome}" loading="lazy">
       <span class="product-card__tag">${produto.categoriaLabel}</span>
-      ${produto.video ? '<span class="product-card__video-badge">Vídeo</span>' : ''}
+      ${produtoTemVideo(produto) ? '<span class="product-card__video-badge">Vídeo</span>' : ''}
       ${count > 1 ? `<span class="product-card__photos-badge">${badgeText}</span>` : ''}
       <span class="product-card__view-hint">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg>

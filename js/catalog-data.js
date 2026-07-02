@@ -92,10 +92,10 @@ const produtos = [
     variantesPorCor: true,
     variantes: [
       { nome: 'Amarela gola amarela', preco: 'R$ 99,99', fotos: [14, 16, 17] },
-      { nome: 'Amarela gola verde', preco: 'R$ 99,99', fotos: [2, 18] },
-      { nome: 'Preta gola verde', preco: 'R$ 99,99', fotos: [0, 1] },
+      { nome: 'Amarela gola verde', preco: 'R$ 99,99', fotos: [2, 18], video: 'images/produtos/polo-treino-brasil/video-amarela-gola-verde.mp4' },
+      { nome: 'Preta gola verde', preco: 'R$ 99,99', fotos: [0, 1], video: 'images/produtos/polo-treino-brasil/video-preta-gola-verde.mp4' },
       { nome: 'Preta gola preta', preco: 'R$ 99,99', fotos: [10, 11, 12] },
-      { nome: 'Ciano', preco: 'R$ 99,99', fotos: [3, 4] },
+      { nome: 'Ciano', preco: 'R$ 99,99', fotos: [3, 4], video: 'images/produtos/polo-treino-brasil/video-ciano.mp4' },
       { nome: 'Azul', preco: 'R$ 99,99', fotos: [5, 6, 7, 8, 9] }
     ],
     imagens: imgs('polo-treino-brasil', 19),
