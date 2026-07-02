@@ -2207,6 +2207,24 @@ button {
   color: #fff;
 }
 
+.home-links__card--cosmeticos {
+  border-color: rgba(255, 105, 180, 0.28);
+  background: linear-gradient(145deg, rgba(255, 105, 180, 0.1), var(--color-bg-card));
+}
+
+.home-links__card--cosmeticos .home-links__label {
+  color: #ff8ec8;
+}
+
+.home-links__card--perfumes {
+  border-color: rgba(180, 130, 255, 0.28);
+  background: linear-gradient(145deg, rgba(180, 130, 255, 0.1), var(--color-bg-card));
+}
+
+.home-links__card--perfumes .home-links__label {
+  color: #c9a8ff;
+}
+
 .home-links__card h3 {
   font-family: var(--font-display);
   font-size: 1.75rem;
@@ -2406,6 +2424,28 @@ button {
 .promo-slide--black .promo-slide__frame {
   width: 100%;
   max-width: 260px;
+}
+
+.promo-slide--cosmeticos .promo-slide__bg {
+  background:
+    linear-gradient(118deg, rgba(255, 105, 180, 0.12) 0%, transparent 42%),
+    linear-gradient(245deg, rgba(0, 151, 57, 0.1) 0%, transparent 38%),
+    linear-gradient(180deg, #0d0d0d 0%, #111 55%, #0a0a0a 100%);
+}
+
+.promo-slide--cosmeticos .promo-slide__title span {
+  color: #ff8ec8;
+}
+
+.promo-slide--perfumes .promo-slide__bg {
+  background:
+    linear-gradient(118deg, rgba(180, 130, 255, 0.14) 0%, transparent 42%),
+    linear-gradient(245deg, rgba(0, 151, 57, 0.1) 0%, transparent 38%),
+    linear-gradient(180deg, #0d0d0d 0%, #111 55%, #0a0a0a 100%);
+}
+
+.promo-slide--perfumes .promo-slide__title span {
+  color: #c9a8ff;
 }
 
 .promo-slide__copy {

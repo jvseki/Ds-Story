@@ -110,7 +110,7 @@ const produtos = [
     categoria: 'copa',
     categoriaLabel: 'Copa',
     grupo: 'copa',
-    preco: 'R$ 99,99',
+    preco: 'R$ 349,99',
     promo: 'Lançamento',
     video: 'images/produtos/manto-treino-black/video.mp4',
     imagens: imgs('manto-treino-black', 1),
@@ -592,6 +592,7 @@ const produtos = [
     grupo: 'bermudas',
     preco: 'R$ 149,99',
     promo: 'De R$ 269,90',
+    video: 'images/produtos/calca-balao-quik/video.mp4',
     imagens: imgs('calca-balao-quik', 18),
     galeriaCompacta: true,
     descricao: 'Calça balão Quiksilver importada. Vários modelos — consulte numeração no WhatsApp.',
@@ -599,13 +600,13 @@ const produtos = [
   },
   {
     id: 'calca-120',
-    nome: 'Calça Importada',
+    nome: 'Calça Quick Silver',
     categoria: 'bermudas',
     categoriaLabel: 'Berm. e Calças',
     grupo: 'bermudas',
     preco: 'R$ 120,00',
     imagens: imgs('calca-120', 2),
-    descricao: 'Calça importada streetwear. Consulte modelos e numeração disponível.',
+    descricao: 'Calça Quiksilver importada streetwear. Consulte modelos e numeração disponível.',
     tamanhos: ['38', '40', '42', '44']
   },
   {
@@ -719,7 +720,7 @@ const produtos = [
   },
   {
     id: 'polo-oakley',
-    nome: 'Polo Oakley',
+    nome: 'Polo Oakley algodão',
     categoria: 'polos',
     categoriaLabel: 'Polo',
     grupo: 'polos',
@@ -736,7 +737,7 @@ const produtos = [
     imagens: imgs('polo-oakley', 13),
     imagemCapaIndex: 0,
     galeriaCompacta: true,
-    descricao: 'Polo Oakley dry fit importada. Escolha o modelo e veja as fotos na galeria.',
+    descricao: 'Polo Oakley 100% algodão importada. Escolha o modelo e veja as fotos na galeria.',
     tamanhos: TAMANHOS_ROUPA
   },
   {
@@ -799,6 +800,19 @@ const produtos = [
     tamanhos: TAMANHOS_TENIS
   },
   {
+    id: 'body-splash',
+    nome: 'Body Splash',
+    categoria: 'cosmeticos',
+    categoriaLabel: 'Perfumes',
+    grupo: 'cosmeticos',
+    preco: 'R$ 149,99',
+    promo: 'Destaque',
+    imagens: imgs('body-splash', 8),
+    galeriaCompacta: true,
+    descricao: 'Body splash importado. Fragrâncias frescas e duradouras — veja os modelos.',
+    tamanhos: null
+  },
+  {
     id: 'perfume-miniatura-arabe',
     nome: 'Perfumes Miniatura Árabe',
     categoria: 'cosmeticos',
@@ -831,18 +845,6 @@ const produtos = [
     imagens: imgs('perfume-miniaturas-brand', 4),
     galeriaCompacta: true,
     descricao: 'Miniaturas de perfumes de grife importados. Ideal para presentear ou experimentar.',
-    tamanhos: null
-  },
-  {
-    id: 'body-splash',
-    nome: 'Body Splash',
-    categoria: 'cosmeticos',
-    categoriaLabel: 'Perfumes',
-    grupo: 'cosmeticos',
-    preco: 'R$ 149,99',
-    imagens: imgs('body-splash', 8),
-    galeriaCompacta: true,
-    descricao: 'Body splash importado. Fragrâncias frescas e duradouras — veja os modelos.',
     tamanhos: null
   }
 ];

@@ -43,34 +43,38 @@ function getModalPhotoIndices(produto) {
   return getImagens(produto).map((_, i) => i);
 }
 
+function buildMidiasList(imageItems, videoConfig) {
+  if (!videoConfig?.src) return imageItems;
+  return [{
+    tipo: 'video',
+    src: videoConfig.src,
+    poster: videoConfig.poster,
+    legenda: videoConfig.legenda || 'Vídeo do produto'
+  }, ...imageItems];
+}
+
 function getModalMidias(produto) {
   const imagens = getImagens(produto);
   const indices = getModalPhotoIndices(produto);
   const variante = modalState.selectedVariant;
-  const items = indices.map(i => ({
+  const imageItems = indices.map(i => ({
     tipo: 'imagem',
     src: imagens[i],
     legenda: getLegenda(produto, i),
     globalIndex: i
   }));
 
+  let videoSrc = null;
   if (variante?.video) {
-    items.push({
-      tipo: 'video',
-      src: variante.video,
-      poster: imagens[indices[0]] ?? imagens[0],
-      legenda: 'Vídeo do produto'
-    });
+    videoSrc = variante.video;
   } else if (produto.video && !produto.variantesPorCor) {
-    items.push({
-      tipo: 'video',
-      src: produto.video,
-      poster: imagens[indices[0]] ?? imagens[0],
-      legenda: 'Vídeo do produto'
-    });
+    videoSrc = produto.video;
   }
 
-  return items;
+  return buildMidiasList(imageItems, videoSrc ? {
+    src: videoSrc,
+    poster: imagens[indices[0]] ?? imagens[0]
+  } : null);
 }
 
 function hasPrecoFixo(produto, variante) {
@@ -259,16 +263,12 @@ function produtoTemVideo(produto) {
 }
 
 function getMidias(produto) {
-  const items = getImagens(produto).map(src => ({ tipo: 'imagem', src }));
-  if (produto.video) {
-    items.push({
-      tipo: 'video',
-      src: produto.video,
-      poster: getImagens(produto)[0],
-      legenda: 'Vídeo do produto'
-    });
-  }
-  return items;
+  const imagens = getImagens(produto);
+  const imageItems = imagens.map(src => ({ tipo: 'imagem', src }));
+  return buildMidiasList(imageItems, produto.video ? {
+    src: produto.video,
+    poster: imagens[0]
+  } : null);
 }
 
 function getMidiaCount(produto) {
@@ -771,6 +771,9 @@ function updateModalPhoto(produto, index) {
       videoEl.src = item.src;
       videoEl.poster = item.poster || imagens[0] || '';
       videoEl.load();
+      const tryPlay = () => videoEl.play().catch(() => {});
+      if (videoEl.readyState >= 2) tryPlay();
+      else videoEl.addEventListener('loadeddata', tryPlay, { once: true });
     }
   } else if (imgEl) {
     if (videoEl) {
