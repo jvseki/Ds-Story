@@ -2397,6 +2397,17 @@ button {
   color: #e8e8e8;
 }
 
+.promo-slide--black .promo-slide__media {
+  grid-template-columns: 1fr;
+  max-width: min(280px, 82vw);
+  justify-items: center;
+}
+
+.promo-slide--black .promo-slide__frame {
+  width: 100%;
+  max-width: 260px;
+}
+
 .promo-slide__copy {
   text-align: center;
   max-width: 540px;
