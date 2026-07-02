@@ -213,42 +213,6 @@ function clearProductShareUrl() {
   history.replaceState(null, '', `${url.pathname}${url.search}${url.hash}`);
 }
 
-async function enviarFotoCliente(produto, photoIndex = modalState.photoIndex) {
-  const midias = modalState.produtoId === produto.id ? getModalMidias(produto) : getMidias(produto);
-  const item = midias[photoIndex];
-  const legenda = item?.tipo === 'imagem'
-    ? getLegenda(produto, getImagens(produto).indexOf(item.src))
-    : null;
-  const titulo = legenda ? `${produto.nome} — ${legenda}` : produto.nome;
-
-  if (item?.tipo === 'video') {
-    const videoUrl = getAbsoluteUrl(item.src);
-    const msg = `${titulo}\nVídeo: ${videoUrl}`;
-    openWhatsApp(`https://wa.me/?text=${encodeURIComponent(msg)}`);
-    return;
-  }
-
-  const fotoUrl = getActivePhotoUrl(produto, photoIndex);
-
-  if (navigator.share) {
-    try {
-      const response = await fetch(fotoUrl);
-      if (!response.ok) throw new Error('fetch failed');
-      const blob = await response.blob();
-      const file = new File([blob], `${produto.id}.jpg`, { type: blob.type || 'image/jpeg' });
-      if (navigator.canShare?.({ files: [file] })) {
-        await navigator.share({ files: [file], title: titulo });
-        return;
-      }
-    } catch (err) {
-      if (err?.name === 'AbortError') return;
-    }
-  }
-
-  const msg = `${titulo}\n${fotoUrl}`;
-  openWhatsApp(`https://wa.me/?text=${encodeURIComponent(msg)}`);
-}
-
 function getProduto(id) {
   return produtos.find(p => p.id === id);
 }
@@ -561,18 +525,6 @@ function bindProductCardEvents(container) {
   });
 }
 
-function updatePhotoShareButton(produto, photoIndex) {
-  const btn = document.getElementById('productModalPhotoShare');
-  if (!btn) return;
-
-  const midias = modalState.produtoId === produto.id ? getModalMidias(produto) : getMidias(produto);
-  const item = midias[photoIndex];
-  btn.hidden = !item;
-  btn.textContent = item?.tipo === 'video'
-    ? 'Enviar este vídeo no WhatsApp'
-    : 'Enviar esta foto no WhatsApp';
-}
-
 function renderModalPriceHTML(produto) {
   if (produto.variantes?.length && produto.variantesPorCor) {
     return `
@@ -812,7 +764,6 @@ function updateModalPhoto(produto, index) {
   if (dotsEl) dotsEl.hidden = !multi || midias.length > 12;
 
   syncUrlToModal(produto, safeIndex);
-  updatePhotoShareButton(produto, safeIndex);
 }
 
 function openProductModal(produtoId) {
@@ -867,7 +818,6 @@ function openProductModal(produtoId) {
   updateModalPhoto(produto, 0);
 
   bindModalEvents(produto);
-  bindPhotoShareButton(produto);
   modal.querySelector('.product-modal__close')?.focus();
 }
 
@@ -954,12 +904,6 @@ function bindModalEvents(produto) {
       getActivePhotoUrl(produto)
     );
   }, { signal });
-}
-
-function bindPhotoShareButton(produto) {
-  const btn = document.getElementById('productModalPhotoShare');
-  if (!btn) return;
-  btn.onclick = () => enviarFotoCliente(produto, modalState.photoIndex);
 }
 
 function initDeepLink() {
