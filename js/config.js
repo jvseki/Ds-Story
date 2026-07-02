@@ -26,8 +26,8 @@ const GRUPOS = [
   },
   {
     id: 'bermudas',
-    titulo: 'Bermudas',
-    descricao: 'Bermudas surf, elastano e jeans importados.'
+    titulo: 'Bermudas e Calças',
+    descricao: 'Bermudas surf, elastano, jeans e calças importadas.'
   },
   {
     id: 'kits',
@@ -50,9 +50,14 @@ const GRUPOS = [
     descricao: 'Polos esportivos de alta performance.'
   },
   {
-    id: 'tenis',
-    titulo: 'Tênis',
-    descricao: 'Mizuno, Nike e modelos importados — consulte numeração.'
+    id: 'calcados',
+    titulo: 'Calçados',
+    descricao: 'Tênis, chinelos, Kenner e modelos importados — consulte numeração.'
+  },
+  {
+    id: 'cosmeticos',
+    titulo: 'Perfumes e Cosméticos',
+    descricao: 'Perfumes árabes, miniaturas, body splash e fragrâncias importadas.'
   },
   {
     id: 'acessorios',
@@ -65,12 +70,13 @@ const NAV_LABELS = {
   copa: 'Copa',
   oculos: 'Óculos',
   camisetas: 'Camisetas',
-  bermudas: 'Bermudas',
+  bermudas: 'Berm. e Calças',
   kits: 'Kits',
   jaquetas: 'Jaquetas',
   moletom: 'Moletom',
   polos: 'Polos',
-  tenis: 'Tênis',
+  calcados: 'Calçados',
+  cosmeticos: 'Perfumes',
   acessorios: 'Bonés'
 };
 
@@ -102,13 +108,6 @@ function variantesKitCompleto(variantes) {
   const items = variantes.filter(v => v.nome !== 'Kit completo');
   return [...items, { nome: 'Kit completo', preco: somaPrecosVariantes(items), foto: 0 }];
 }
-
-const POLO_TREINO_CORES = [
-  { nome: 'Amarelo', arquivo: '01.jpeg' },
-  { nome: 'Ciano', arquivo: '02.jpeg' },
-  { nome: 'Azul', arquivo: '05.jpeg' },
-  { nome: 'Preto', arquivo: '09.jpeg' }
-];
 
 function openWhatsApp(url) {
   const mobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);

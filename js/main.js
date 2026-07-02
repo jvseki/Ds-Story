@@ -1040,7 +1040,9 @@ function initCardAnimations() {
 function initCatalogPage() {
   const params = new URLSearchParams(window.location.search);
   activeSearchQuery = params.get('q') || '';
-  activeCategoryFilter = params.get('cat') || 'todos';
+  let cat = params.get('cat') || 'todos';
+  if (cat === 'tenis') cat = 'calcados';
+  activeCategoryFilter = cat;
 
   initFilters();
   initSearch();
