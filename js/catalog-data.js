@@ -637,7 +637,7 @@ const produtos = [
     categoria: 'copa',
     categoriaLabel: 'Copa',
     grupo: 'copa',
-    preco: 'R$ 249,99',
+    preco: null,
     imagens: imgs('camisa-amarelinha-2026', 7),
     galeriaCompacta: true,
     descricao: 'Camisa amarelinha Seleção Brasileira 2026 — versão tailandesa premium.',
