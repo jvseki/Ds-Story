@@ -31,8 +31,62 @@ function getPhotoUrlForIndex(produto, index) {
   return getAbsoluteUrl(imagens[safe]);
 }
 
+function getVariantFotoIndices(variante) {
+  if (variante?.fotos?.length) return variante.fotos;
+  if (variante?.foto != null) return [variante.foto];
+  return null;
+}
+
+function getModalPhotoIndices(produto) {
+  const fromVariant = getVariantFotoIndices(modalState.selectedVariant);
+  if (fromVariant) return fromVariant;
+  return getImagens(produto).map((_, i) => i);
+}
+
+function getModalMidias(produto) {
+  const imagens = getImagens(produto);
+  const indices = getModalPhotoIndices(produto);
+  const items = indices.map(i => ({
+    tipo: 'imagem',
+    src: imagens[i],
+    legenda: getLegenda(produto, i),
+    globalIndex: i
+  }));
+
+  if (produto.video && !produto.variantesPorCor) {
+    items.push({
+      tipo: 'video',
+      src: produto.video,
+      poster: imagens[indices[0]] ?? imagens[0],
+      legenda: 'Vídeo do produto'
+    });
+  }
+
+  return items;
+}
+
+function hasPrecoFixo(produto, variante) {
+  return Boolean(variante?.preco || produto.preco);
+}
+
+function getResolvedPreco(produto, variante) {
+  return variante?.preco || produto.preco || null;
+}
+
+function getWhatsappCtaText(produto, tamanho, variante) {
+  if (!canSubmitOrder(produto, tamanho, variante)) {
+    if (produto.grupo === 'kits' && produto.variantes?.length && !variante) return 'Escolha a peça ou kit';
+    if (produto.variantes?.length && !variante) {
+      return produto.variantesPorCor ? 'Escolha a cor' : 'Escolha o modelo';
+    }
+    if (produto.tamanhos?.length && !tamanho) return 'Escolha o tamanho';
+    return 'Solicitar Orçamento';
+  }
+  return hasPrecoFixo(produto, variante) ? 'Comprar no WhatsApp' : 'Solicitar Orçamento';
+}
+
 function getActivePhotoUrl(produto, photoIndex = modalState.photoIndex) {
-  const midias = getMidias(produto);
+  const midias = modalState.produtoId === produto.id ? getModalMidias(produto) : getMidias(produto);
   const item = midias[photoIndex];
   if (item?.tipo === 'imagem') return getAbsoluteUrl(item.src);
   if (item?.tipo === 'video') return getAbsoluteUrl(item.poster || getImagens(produto)[0]);
@@ -148,7 +202,7 @@ function clearProductShareUrl() {
 }
 
 async function enviarFotoCliente(produto, photoIndex = modalState.photoIndex) {
-  const midias = getMidias(produto);
+  const midias = modalState.produtoId === produto.id ? getModalMidias(produto) : getMidias(produto);
   const item = midias[photoIndex];
   const legenda = item?.tipo === 'imagem'
     ? getLegenda(produto, getImagens(produto).indexOf(item.src))
@@ -214,19 +268,21 @@ function formatPreco(produto) {
 }
 
 function buildMensagem(produto, tamanho, variante, fotoUrl) {
-  let msg = `Olá! Vi no site da DS A Fonte o produto "${produto.nome}" e gostaria de solicitar um orçamento.`;
+  const preco = getResolvedPreco(produto, variante);
+  let msg = preco
+    ? `Olá! Vi no site da DS A Fonte o produto "${produto.nome}" e quero comprar.`
+    : `Olá! Vi no site da DS A Fonte o produto "${produto.nome}" e gostaria de solicitar um orçamento.`;
 
   if (variante) {
     msg += ` Modelo escolhido: ${variante.nome}${variante.preco ? ` (${variante.preco})` : ''}.`;
-  } else if (produto.variantes?.length) {
+  } else if (produto.variantes?.length && !preco) {
     const opcoes = produto.variantes
       .map(v => `${v.nome}${v.preco ? ` (${v.preco})` : ''}`)
       .join(', ');
     msg += ` Opções disponíveis: ${opcoes}.`;
-  } else if (produto.preco) {
-    msg += ` Valor: ${produto.preco}.`;
   }
 
+  if (preco && !variante?.preco) msg += ` Valor: ${preco}.`;
   if (produto.promo) msg += ` Promoção: ${produto.promo}.`;
   if (tamanho) msg += ` Tamanho/Numeração: ${tamanho}.`;
   if (fotoUrl) msg += ` Foto: ${fotoUrl}`;
@@ -291,10 +347,17 @@ function renderPrecoHTML(produto) {
 }
 
 function getVariantLabel(produto, context = 'card') {
+  if (produto.variantesPorCor) return context === 'modal' ? 'Cor' : 'Cor';
   if (produto.id === 'kit-feminino-brasil') return 'Itens do kit';
   if (produto.grupo === 'kits') return 'Escolha a peça ou kit';
   if (produto.variantes?.length > 1 && produto.imagens?.length > 1) return 'Escolha o modelo';
   return context === 'modal' ? 'Escolha o modelo' : 'Modelo';
+}
+
+function getVariantFotoIndex(variante, fallback = 0) {
+  if (variante?.fotos?.length) return variante.fotos[0];
+  if (variante?.foto != null) return variante.foto;
+  return fallback;
 }
 
 function renderVariantPickHTML(produto, context = 'card') {
@@ -312,7 +375,7 @@ function renderVariantPickHTML(produto, context = 'card') {
             type="button"
             class="variant-btn"
             data-variant-index="${i}"
-            data-foto-index="${v.foto ?? i}"
+            data-foto-index="${getVariantFotoIndex(v, i)}"
             aria-pressed="false">
             ${v.nome}
           </button>
@@ -332,13 +395,7 @@ function updateOrderButtonState(container, produto) {
   const ready = canSubmitOrder(produto, tamanho, variante);
 
   btn.disabled = !ready;
-  btn.querySelector('.btn-text').textContent = ready
-    ? 'Solicitar Orçamento'
-    : (produto.grupo === 'kits' && produto.variantes?.length && !variante
-      ? 'Escolha a peça ou kit'
-      : produto.variantes?.length && !variante
-        ? 'Escolha o modelo'
-        : 'Escolha o tamanho');
+  btn.querySelector('.btn-text').textContent = getWhatsappCtaText(produto, tamanho, variante);
 }
 
 function renderSizesHTML(produto) {
@@ -395,11 +452,11 @@ function renderPreviewHTML(produto) {
 function buildProductCardHTML(produto) {
   const needsSize = Boolean(produto.tamanhos?.length);
   const needsVariant = Boolean(produto.variantes?.length);
-  const btnText = produto.grupo === 'kits' && needsVariant
-    ? 'Escolha a peça ou kit'
-    : needsVariant
-      ? 'Escolha o modelo'
-      : (needsSize ? 'Escolha o tamanho' : 'Solicitar Orçamento');
+  const btnText = getWhatsappCtaText(
+    produto,
+    null,
+    null
+  );
   const disabled = needsSize || needsVariant;
 
   const cardExtras = [
@@ -495,7 +552,7 @@ function updatePhotoShareButton(produto, photoIndex) {
   const btn = document.getElementById('productModalPhotoShare');
   if (!btn) return;
 
-  const midias = getMidias(produto);
+  const midias = modalState.produtoId === produto.id ? getModalMidias(produto) : getMidias(produto);
   const item = midias[photoIndex];
   btn.hidden = !item;
   btn.textContent = item?.tipo === 'video'
@@ -504,6 +561,29 @@ function updatePhotoShareButton(produto, photoIndex) {
 }
 
 function renderModalPriceHTML(produto) {
+  if (produto.variantes?.length && produto.variantesPorCor) {
+    return `
+      <h3 class="product-modal__section-title">Preço</h3>
+      <div class="product-modal__price">${produto.preco || 'Consulte'}</div>
+      ${produto.promo ? `<p class="product-modal__promo">${produto.promo}</p>` : ''}
+      <h3 class="product-modal__section-title">${getVariantLabel(produto, 'modal')}</h3>
+      <ul class="product-modal__variant-grid product-modal__variant-grid--colors">
+        ${produto.variantes.map((v, i) => `
+          <li>
+            <button
+              type="button"
+              class="product-modal__variant-item variant-btn variant-btn--color"
+              data-variant-index="${i}"
+              data-foto-index="${getVariantFotoIndex(v, i)}"
+              aria-pressed="false">
+              <span class="product-modal__variant-name">${v.nome}</span>
+            </button>
+          </li>
+        `).join('')}
+      </ul>
+    `;
+  }
+
   if (produto.variantes?.length) {
     const variantTitle = getVariantLabel(produto, 'modal');
     return `
@@ -515,7 +595,7 @@ function renderModalPriceHTML(produto) {
               type="button"
               class="product-modal__variant-item variant-btn"
               data-variant-index="${i}"
-              data-foto-index="${v.foto ?? i}"
+              data-foto-index="${getVariantFotoIndex(v, i)}"
               aria-pressed="false">
               <span class="product-modal__variant-name">${v.nome}</span>
               <span class="product-modal__variant-price${v.preco ? '' : ' product-modal__variant-price--quote'}">${v.preco || 'Solicitar orçamento'}</span>
@@ -634,8 +714,21 @@ function showModalImage(produtoId, photoIndex, src, alt) {
   if (loader.complete) reveal();
 }
 
+function updateModalGalleryDots(produto) {
+  const midias = getModalMidias(produto);
+  const dotsEl = document.getElementById('productModalDots');
+  if (!dotsEl) return;
+
+  dotsEl.innerHTML = midias.map((_, i) => `
+    <button type="button" class="product-modal__dot${i === modalState.photoIndex ? ' active' : ''}" data-photo-index="${i}" aria-label="Ir para mídia ${i + 1}" aria-selected="${i === modalState.photoIndex ? 'true' : 'false'}"></button>
+  `).join('');
+
+  const multi = midias.length > 1;
+  dotsEl.hidden = !multi || midias.length > 12;
+}
+
 function updateModalPhoto(produto, index) {
-  const midias = getMidias(produto);
+  const midias = getModalMidias(produto);
   if (!midias.length) return;
 
   const imagens = getImagens(produto);
@@ -714,16 +807,19 @@ function openProductModal(produtoId) {
   modalEventsAbort?.abort();
   resetModalGallery();
   modal.classList.remove('is-closing');
-  modalState = { produtoId, photoIndex: 0, selectedSize: null, selectedVariant: null };
+  modalState = {
+    produtoId,
+    photoIndex: 0,
+    selectedSize: null,
+    selectedVariant: produto.variantesPorCor && produto.variantes?.length
+      ? getVariante(produto, 0)
+      : null
+  };
 
-  const midias = getMidias(produto);
+  const midias = getModalMidias(produto);
   const needsSize = Boolean(produto.tamanhos?.length);
-  const needsVariant = Boolean(produto.variantes?.length);
-  const btnText = produto.grupo === 'kits' && needsVariant
-    ? 'Escolha a peça ou kit'
-    : needsVariant
-      ? 'Escolha o modelo'
-      : (needsSize ? 'Escolha o tamanho' : 'Solicitar Orçamento');
+  const needsVariant = Boolean(produto.variantes?.length) && !produto.variantesPorCor;
+  const btnText = getWhatsappCtaText(produto, null, modalState.selectedVariant);
 
   document.getElementById('productModalCategory').textContent = produto.categoriaLabel;
   document.getElementById('productModalTitle').textContent = produto.nome;
@@ -735,13 +831,18 @@ function openProductModal(produtoId) {
   sizesEl.hidden = !produto.tamanhos?.length;
 
   const whatsappBtn = document.getElementById('productModalWhatsapp');
-  whatsappBtn.disabled = needsSize || needsVariant;
+  whatsappBtn.disabled = !canSubmitOrder(produto, null, modalState.selectedVariant);
   whatsappBtn.querySelector('.btn-text').textContent = btnText;
 
-  const dotsEl = document.getElementById('productModalDots');
-  dotsEl.innerHTML = midias.map((_, i) => `
-    <button type="button" class="product-modal__dot${i === 0 ? ' active' : ''}" data-photo-index="${i}" aria-label="Ir para mídia ${i + 1}" aria-selected="${i === 0 ? 'true' : 'false'}"></button>
-  `).join('');
+  if (produto.variantesPorCor && produto.variantes?.length) {
+    requestAnimationFrame(() => {
+      const firstVariantBtn = document.querySelector('#productModalPanel .variant-btn[data-variant-index="0"]');
+      firstVariantBtn?.classList.add('active');
+      firstVariantBtn?.setAttribute('aria-pressed', 'true');
+    });
+  }
+
+  updateModalGalleryDots(produto);
 
   modal.classList.add('open');
   modal.setAttribute('aria-hidden', 'false');
@@ -808,7 +909,9 @@ function bindModalEvents(produto) {
       btn.classList.add('active');
       btn.setAttribute('aria-pressed', 'true');
       modalState.selectedVariant = getVariante(produto, Number(btn.dataset.variantIndex));
-      updateModalPhoto(produto, Number(btn.dataset.fotoIndex));
+      modalState.photoIndex = 0;
+      updateModalGalleryDots(produto);
+      updateModalPhoto(produto, 0);
       updateOrderButtonState(panel, produto);
     }, { signal });
   });

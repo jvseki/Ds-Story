@@ -1378,6 +1378,34 @@ button {
   border-radius: 999px;
 }
 
+.product-modal__variant-grid--colors {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  max-height: none;
+  overflow: visible;
+  padding-bottom: 0;
+}
+
+.product-modal__variant-grid--colors .product-modal__variant-item {
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  min-height: 52px;
+  padding: 10px 12px;
+}
+
+.product-modal__variant-grid--colors .product-modal__variant-name {
+  font-size: 0.82rem;
+  line-height: 1.25;
+}
+
+.variant-btn--color.active {
+  border-color: var(--color-green);
+  background: rgba(0, 151, 57, 0.14);
+  color: var(--color-yellow);
+}
+
 .product-modal__variant-item {
   display: flex;
   align-items: center;

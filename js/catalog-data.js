@@ -89,9 +89,19 @@ const produtos = [
     categoriaLabel: 'Copa',
     grupo: 'copa',
     preco: 'R$ 99,99',
+    variantesPorCor: true,
+    variantes: [
+      { nome: 'Amarela gola amarela', preco: 'R$ 99,99', fotos: [14, 16, 17] },
+      { nome: 'Amarela gola verde', preco: 'R$ 99,99', fotos: [2, 18] },
+      { nome: 'Preta gola verde', preco: 'R$ 99,99', fotos: [0, 1] },
+      { nome: 'Preta gola preta', preco: 'R$ 99,99', fotos: [10, 11, 12] },
+      { nome: 'Ciano', preco: 'R$ 99,99', fotos: [3, 4] },
+      { nome: 'Azul', preco: 'R$ 99,99', fotos: [5, 6, 7, 8, 9, 13, 15] }
+    ],
     imagens: imgs('polo-treino-brasil', 19),
+    imagemCapaIndex: 14,
     galeriaCompacta: true,
-    descricao: 'Polo de treino CBF patrocínio Guaraná — várias cores e modelos. Escolha na galeria e consulte tamanho.',
+    descricao: 'Polo de treino CBF patrocínio Guaraná — escolha a cor e veja os modelos disponíveis.',
     tamanhos: TAMANHOS_ROUPA
   },
   {
@@ -167,7 +177,7 @@ const produtos = [
     categoriaLabel: 'Berm. e Calças',
     grupo: 'bermudas',
     preco: 'R$ 79,99',
-    imagens: imgs('bermudas-elastano-79', 58),
+    imagens: imgs('bermudas-elastano-79', 57),
     galeriaCompacta: true,
     descricao: 'Bermudas elastano surf importadas. Vários modelos e cores — veja a galeria.',
     tamanhos: TAMANHOS_ROUPA
@@ -714,9 +724,20 @@ const produtos = [
     categoriaLabel: 'Polo',
     grupo: 'polos',
     preco: 'R$ 100,00',
+    variantesPorCor: true,
+    variantes: [
+      { nome: 'Branca Caveira', preco: 'R$ 100,00', fotos: [0, 8] },
+      { nome: 'Branca Elite SF', preco: 'R$ 100,00', fotos: [9, 10] },
+      { nome: 'Preta Caveira', preco: 'R$ 100,00', fotos: [7, 12] },
+      { nome: 'Preta Elite SF', preco: 'R$ 100,00', fotos: [3, 4, 5, 11] },
+      { nome: 'Preta Pilot', preco: 'R$ 100,00', fotos: [2] },
+      { nome: 'Preta Camuflado', preco: 'R$ 100,00', fotos: [1] },
+      { nome: 'Preta Escudo', preco: 'R$ 100,00', fotos: [6] }
+    ],
     imagens: imgs('polo-oakley', 13),
+    imagemCapaIndex: 0,
     galeriaCompacta: true,
-    descricao: 'Polo Oakley dry fit importada. Vários modelos disponíveis.',
+    descricao: 'Polo Oakley dry fit importada. Escolha o modelo e veja as fotos na galeria.',
     tamanhos: TAMANHOS_ROUPA
   },
   {
